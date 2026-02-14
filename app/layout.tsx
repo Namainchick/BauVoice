@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { ReportProvider } from '@/lib/context/ReportContext';
+import BottomNav from '@/components/BottomNav';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -24,11 +25,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="de">
-      <body className={`${inter.className} bg-white text-gray-900 min-h-screen`}>
+      <body className={inter.className}>
         <ReportProvider>
-          <main className="max-w-md mx-auto min-h-screen">
+          <main className="max-w-md mx-auto min-h-screen pb-20">
             {children}
           </main>
+          <BottomNav />
         </ReportProvider>
       </body>
     </html>
