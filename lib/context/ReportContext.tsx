@@ -1,16 +1,19 @@
 'use client';
 
-import React, { createContext, useContext, useReducer, ReactNode } from 'react';
+import React, { createContext, useContext, useReducer, useEffect, ReactNode } from 'react';
 import { Report, FollowUpQuestion, DetectedProblem, GeminiAnalysisResult } from '@/lib/types/report';
+import { SavedReport, loadReports, saveReport, isDemoLoaded, markDemoLoaded, generateReportId } from '@/lib/utils/storage';
+import { DEMO_REPORTS } from '@/lib/data/demoReports';
 
 export type FlowStep = 'start' | 'recording' | 'processing' | 'report' | 'confirm';
 
-interface AppState {
+export interface AppState {
   transcript: string;
   report: Report | null;
   questions: FollowUpQuestion[];
   problems: DetectedProblem[];
-  confirmedReports: Report[];
+  savedReports: SavedReport[];
+  currentReportId: string | null;
   photos: string[];
   flowStep: FlowStep;
 }
@@ -24,6 +27,9 @@ type Action =
   | { type: 'ADD_PHOTO'; payload: string }
   | { type: 'CONFIRM_REPORT' }
   | { type: 'SET_FLOW_STEP'; payload: FlowStep }
+  | { type: 'LOAD_SAVED_REPORTS'; payload: SavedReport[] }
+  | { type: 'SET_CURRENT_REPORT_ID'; payload: string }
+  | { type: 'VIEW_SAVED_REPORT'; payload: SavedReport }
   | { type: 'RESET' };
 
 const initialState: AppState = {
@@ -31,7 +37,8 @@ const initialState: AppState = {
   report: null,
   questions: [],
   problems: [],
-  confirmedReports: [],
+  savedReports: [],
+  currentReportId: null,
   photos: [],
   flowStep: 'start',
 };
@@ -55,19 +62,42 @@ function reportReducer(state: AppState, action: Action): AppState {
       return { ...state, problems: action.payload };
     case 'ADD_PHOTO':
       return { ...state, photos: [...state.photos, action.payload] };
-    case 'CONFIRM_REPORT':
+    case 'CONFIRM_REPORT': {
       if (!state.report) return state;
+      const confirmed = { ...state.report, status: 'bestaetigt' as const };
+      const entry: SavedReport = {
+        id: state.currentReportId || generateReportId(),
+        report: confirmed,
+        questions: [],
+        problems: [],
+        savedAt: new Date().toISOString(),
+      };
+      saveReport(entry);
+      const updatedReports = loadReports();
       return {
         ...state,
-        report: { ...state.report, status: 'bestaetigt' },
-        confirmedReports: [...state.confirmedReports, { ...state.report, status: 'bestaetigt' }],
+        report: confirmed,
+        savedReports: updatedReports,
       };
+    }
     case 'SET_FLOW_STEP':
       return { ...state, flowStep: action.payload };
+    case 'LOAD_SAVED_REPORTS':
+      return { ...state, savedReports: action.payload };
+    case 'SET_CURRENT_REPORT_ID':
+      return { ...state, currentReportId: action.payload };
+    case 'VIEW_SAVED_REPORT':
+      return {
+        ...state,
+        report: action.payload.report,
+        questions: action.payload.questions,
+        problems: action.payload.problems,
+        currentReportId: action.payload.id,
+      };
     case 'RESET':
       return {
         ...initialState,
-        confirmedReports: state.confirmedReports,
+        savedReports: state.savedReports,
       };
     default:
       return state;
@@ -81,6 +111,17 @@ const ReportContext = createContext<{
 
 export function ReportProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reportReducer, initialState);
+
+  useEffect(() => {
+    if (!isDemoLoaded()) {
+      for (const demo of DEMO_REPORTS) {
+        saveReport(demo);
+      }
+      markDemoLoaded();
+    }
+    dispatch({ type: 'LOAD_SAVED_REPORTS', payload: loadReports() });
+  }, []);
+
   return (
     <ReportContext.Provider value={{ state, dispatch }}>
       {children}
