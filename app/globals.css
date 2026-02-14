@@ -2,23 +2,28 @@
 
 /* ─── plancraft-inspired design tokens ─── */
 :root {
-  --bg-primary: #1f1b1c;
-  --bg-surface: rgba(255, 255, 255, 0.05);
-  --bg-surface-hover: rgba(255, 255, 255, 0.08);
-  --border-subtle: rgba(255, 255, 255, 0.08);
-  --border-medium: rgba(255, 255, 255, 0.15);
+  --bg-primary: #F5F5F5;
+  --bg-surface: #FFFFFF;
+  --bg-surface-hover: #F0F0F0;
+  --border-subtle: #E5E7EB;
+  --border-medium: #D1D5DB;
   --accent: #29FFBF;
-  --accent-dim: rgba(41, 255, 191, 0.15);
-  --accent-glow: 0 0 0 2px rgba(41, 255, 191, 0.35);
-  --text-primary: #ffffff;
-  --text-secondary: rgba(255, 255, 255, 0.6);
-  --text-tertiary: rgba(255, 255, 255, 0.3);
-  --danger: #ff6b6b;
-  --warning: #FFB84D;
+  --accent-dim: rgba(41, 255, 191, 0.12);
+  --accent-glow: 0 0 0 2px rgba(41, 255, 191, 0.4);
+  --text-primary: #1A1A1A;
+  --text-secondary: #6B7280;
+  --text-tertiary: #9CA3AF;
+  --danger: #EF4444;
+  --warning: #F59E0B;
   --success: #29FFBF;
-  --status-entwurf: #FFB84D;
-  --status-vollstaendig: #60A5FA;
-  --status-bestaetigt: #29FFBF;
+  --status-entwurf: #F59E0B;
+  --status-vollstaendig: #3B82F6;
+  --status-bestaetigt: #10B981;
+  --nav-bg: #1E1E1E;
+  --nav-text: rgba(255, 255, 255, 0.6);
+  --nav-active: #29FFBF;
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-card-hover: 0 4px 12px rgba(0, 0, 0, 0.12);
 }
 
 body {
@@ -53,8 +58,8 @@ body {
 }
 
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(41, 255, 191, 0.4); }
-  50% { box-shadow: 0 0 20px 8px rgba(41, 255, 191, 0.2); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(41, 255, 191, 0.5); }
+  50% { box-shadow: 0 0 24px 10px rgba(41, 255, 191, 0.3); }
 }
 
 @keyframes count-up-bar {
