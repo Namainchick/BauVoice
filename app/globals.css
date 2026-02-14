@@ -1,14 +1,50 @@
 @import "tailwindcss";
 
-/* Custom animations */
+/* ─── plancraft-inspired design tokens ─── */
+:root {
+  --bg-primary: #1f1b1c;
+  --bg-surface: rgba(255, 255, 255, 0.05);
+  --bg-surface-hover: rgba(255, 255, 255, 0.08);
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-medium: rgba(255, 255, 255, 0.15);
+  --accent: #29FFBF;
+  --accent-dim: rgba(41, 255, 191, 0.15);
+  --accent-glow: 0 0 0 2px rgba(41, 255, 191, 0.35);
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.6);
+  --text-tertiary: rgba(255, 255, 255, 0.3);
+  --danger: #ff6b6b;
+  --warning: #FFB84D;
+  --success: #29FFBF;
+  --status-entwurf: #FFB84D;
+  --status-vollstaendig: #60A5FA;
+  --status-bestaetigt: #29FFBF;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+/* ─── Animations ─── */
 @keyframes fade-in {
   from { opacity: 0; }
   to { opacity: 1; }
 }
 
-@keyframes slide-in-from-bottom {
+@keyframes slide-up {
   from { transform: translateY(1rem); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes slide-in-right {
+  from { transform: translateX(1rem); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slide-in-left {
+  from { transform: translateX(-1rem); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
 }
 
 @keyframes zoom-in {
@@ -16,24 +52,45 @@
   to { transform: scale(1); opacity: 1; }
 }
 
-.animate-fade-in {
-  animation: fade-in 300ms ease-out both;
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(41, 255, 191, 0.4); }
+  50% { box-shadow: 0 0 20px 8px rgba(41, 255, 191, 0.2); }
 }
 
-.animate-slide-up {
-  animation: slide-in-from-bottom 300ms ease-out both;
+@keyframes count-up-bar {
+  from { width: 0%; }
 }
 
-.animate-zoom-in {
-  animation: zoom-in 300ms ease-out both;
+@keyframes check-stroke {
+  to { stroke-dashoffset: 0; }
 }
 
-/* Prevent iOS zoom on input focus */
+@keyframes stagger-in {
+  from { transform: translateY(0.5rem); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.animate-fade-in { animation: fade-in 300ms ease-out both; }
+.animate-slide-up { animation: slide-up 300ms ease-out both; }
+.animate-slide-right { animation: slide-in-right 300ms ease-out both; }
+.animate-slide-left { animation: slide-in-left 300ms ease-out both; }
+.animate-zoom-in { animation: zoom-in 300ms ease-out both; }
+.animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+.animate-count-up { animation: count-up-bar 800ms ease-out both; }
+.animate-check { stroke-dasharray: 24; stroke-dashoffset: 24; animation: check-stroke 400ms ease-out forwards; }
+
+.stagger-1 { animation: stagger-in 300ms ease-out 50ms both; }
+.stagger-2 { animation: stagger-in 300ms ease-out 100ms both; }
+.stagger-3 { animation: stagger-in 300ms ease-out 150ms both; }
+.stagger-4 { animation: stagger-in 300ms ease-out 200ms both; }
+.stagger-5 { animation: stagger-in 300ms ease-out 250ms both; }
+
+/* ─── Prevent iOS zoom on input focus ─── */
 input, textarea, select {
   font-size: 16px !important;
 }
 
-/* Safe area padding for mobile */
+/* ─── Safe area padding for mobile ─── */
 @supports (padding: max(0px)) {
   body {
     padding-bottom: env(safe-area-inset-bottom);
