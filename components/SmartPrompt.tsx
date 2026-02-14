@@ -8,13 +8,13 @@ interface KeywordTag {
 }
 
 const KEYWORDS: KeywordTag[] = [
-  { label: 'Wetter', beispiel: 'z.B. "Sonnig, 15 Grad, leichter Wind"' },
+  { label: 'Projekt', beispiel: 'z.B. "Baustelle Müller, Hauptstraße 12"' },
+  { label: 'Arbeitszeiten', beispiel: 'z.B. "Von 7 bis 16 Uhr, halbe Stunde Pause"' },
   { label: 'Team', beispiel: 'z.B. "Ich war mit Kevin und Markus vor Ort"' },
-  { label: 'Leistungen', beispiel: 'z.B. "Wir haben 35m² Estrich verlegt"' },
-  { label: 'Material', beispiel: 'z.B. "2 Rollen Dampfsperrfolie verbraucht"' },
-  { label: 'Geräte', beispiel: 'z.B. "Haben den Bagger 4 Stunden genutzt"' },
-  { label: 'Zeiten', beispiel: 'z.B. "Von 7 bis 16 Uhr, halbe Stunde Pause"' },
-  { label: 'Probleme', beispiel: 'z.B. "An der Südwand ist ein Riss aufgefallen"' },
+  { label: 'Leistungen', beispiel: 'z.B. "35m² Estrich verlegt, Dachlatten montiert"' },
+  { label: 'Material', beispiel: 'z.B. "2 Rollen Dampfsperrfolie, 50 Dachlatten"' },
+  { label: 'Geräte', beispiel: 'z.B. "Akkuschrauber und Bohrhammer benutzt"' },
+  { label: 'Probleme', beispiel: 'z.B. "Riss an der Südwand, Lieferung kam nicht"' },
 ];
 
 export default function SmartPrompt() {
@@ -23,7 +23,7 @@ export default function SmartPrompt() {
   return (
     <div className="space-y-4">
       <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-        Erzähl einfach von deinem Tag — was habt ihr gemacht, wer war dabei, welches Material?
+        Nenne dein Projekt, Arbeitszeiten, erledigte Arbeiten, verbrauchtes Material und wer dabei war.
       </p>
 
       <div className="flex flex-wrap gap-2">
