@@ -1,12 +1,15 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useReport } from '@/lib/context/ReportContext';
 import VoiceRecorder from '@/components/VoiceRecorder';
 
-export default function RecordingPage() {
+function RecordingContent() {
   const router = useRouter();
   const { dispatch } = useReport();
+  const searchParams = useSearchParams();
+  const startInTextMode = searchParams.get('fallback') === 'true';
 
   const handleStop = () => {
     dispatch({ type: 'SET_FLOW_STEP', payload: 'processing' });
@@ -20,11 +23,11 @@ export default function RecordingPage() {
           Bau<span style={{ color: 'var(--accent)' }}>Voice</span>
         </h1>
         <p className="mt-1" style={{ color: 'var(--text-secondary)' }}>
-          Sprich einfach drauf los
+          {startInTextMode ? 'Beschreibe deinen Arbeitstag' : 'Sprich einfach drauf los'}
         </p>
       </div>
 
-      <VoiceRecorder onStop={handleStop} />
+      <VoiceRecorder onStop={handleStop} startInTextMode={startInTextMode} />
 
       <div className="mt-auto pt-4 pb-8">
         <button
@@ -36,5 +39,13 @@ export default function RecordingPage() {
         </button>
       </div>
     </div>
+  );
+}
+
+export default function RecordingPage() {
+  return (
+    <Suspense>
+      <RecordingContent />
+    </Suspense>
   );
 }

@@ -6,9 +6,10 @@ import { useReport } from '@/lib/context/ReportContext';
 
 interface VoiceRecorderProps {
   onStop: (transcript: string) => void;
+  startInTextMode?: boolean;
 }
 
-export default function VoiceRecorder({ onStop }: VoiceRecorderProps) {
+export default function VoiceRecorder({ onStop, startInTextMode = false }: VoiceRecorderProps) {
   const { dispatch } = useReport();
   const [isRecording, setIsRecording] = useState(false);
   const [transcript, setTranscript] = useState('');
@@ -24,8 +25,8 @@ export default function VoiceRecorder({ onStop }: VoiceRecorderProps) {
   const supported = typeof window !== 'undefined' && isSpeechRecognitionSupported();
 
   useEffect(() => {
-    if (!supported) setFallbackMode(true);
-  }, [supported]);
+    if (!supported || startInTextMode) setFallbackMode(true);
+  }, [supported, startInTextMode]);
 
   useEffect(() => {
     if (isRecording) {

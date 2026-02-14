@@ -85,6 +85,12 @@ body {
 .stagger-4 { animation: stagger-in 300ms ease-out 200ms both; }
 .stagger-5 { animation: stagger-in 300ms ease-out 250ms both; }
 
+/* ─── Focus glow on inputs ─── */
+input:focus, textarea:focus, select:focus {
+  box-shadow: var(--accent-glow);
+  outline: none;
+}
+
 /* ─── Prevent iOS zoom on input focus ─── */
 input, textarea, select {
   font-size: 16px !important;
