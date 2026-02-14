@@ -50,7 +50,7 @@ export default function ReportPage() {
               router.push('/confirm');
             }}
             className="w-full py-4 rounded-xl font-medium text-base transition-all active:scale-[0.98]"
-            style={{ backgroundColor: 'var(--accent)', color: 'var(--bg-primary)' }}
+            style={{ backgroundColor: 'var(--accent)', color: '#1A1A1A' }}
           >
             Bericht überprüfen & bestätigen
           </button>

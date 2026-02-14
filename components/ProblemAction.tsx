@@ -77,7 +77,7 @@ export default function ProblemAction() {
 
       {toastMessage && (
         <div className="fixed bottom-20 left-1/2 -translate-x-1/2 px-6 py-3 rounded-full text-sm shadow-lg animate-slide-up z-50"
-          style={{ backgroundColor: 'var(--accent)', color: 'var(--bg-primary)' }}>
+          style={{ backgroundColor: 'var(--accent)', color: '#1A1A1A' }}>
           {toastMessage}
         </div>
       )}

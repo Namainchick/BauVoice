@@ -76,7 +76,7 @@ export default function ProcessingPage() {
             className="w-full py-3 rounded-xl font-medium text-base transition-all active:scale-[0.98]"
             style={{
               backgroundColor: 'var(--accent)',
-              color: 'var(--bg-primary)',
+              color: '#1A1A1A',
             }}
           >
             Nochmal versuchen

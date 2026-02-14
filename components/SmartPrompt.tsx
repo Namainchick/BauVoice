@@ -35,7 +35,7 @@ export default function SmartPrompt() {
             style={{
               backgroundColor: activeTag === kw.label ? 'var(--accent)' : 'transparent',
               borderColor: activeTag === kw.label ? 'var(--accent)' : 'var(--border-medium)',
-              color: activeTag === kw.label ? 'var(--bg-primary)' : 'var(--text-secondary)',
+              color: activeTag === kw.label ? '#1A1A1A' : 'var(--text-secondary)',
             }}
           >
             {kw.label}

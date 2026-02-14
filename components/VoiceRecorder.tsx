@@ -105,7 +105,7 @@ export default function VoiceRecorder({ onStop, startInTextMode = false }: Voice
           onClick={handleFallbackSubmit}
           disabled={!fallbackText.trim()}
           className="w-full py-4 rounded-xl font-medium text-base disabled:opacity-50 transition-all active:scale-[0.98]"
-          style={{ backgroundColor: 'var(--accent)', color: 'var(--bg-primary)' }}
+          style={{ backgroundColor: 'var(--accent)', color: '#1A1A1A' }}
         >
           Bericht analysieren
         </button>
@@ -134,7 +134,7 @@ export default function VoiceRecorder({ onStop, startInTextMode = false }: Voice
             <rect x="6" y="6" width="12" height="12" rx="2" />
           </svg>
         ) : (
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-10 h-10" style={{ fill: 'var(--bg-primary)' }}>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-10 h-10" style={{ fill: '#1A1A1A' }}>
             <path d="M12 1a4 4 0 0 0-4 4v7a4 4 0 0 0 8 0V5a4 4 0 0 0-4-4Z" />
             <path d="M6 11a1 1 0 0 0-2 0 8 8 0 0 0 7 7.93V21H8a1 1 0 1 0 0 2h8a1 1 0 1 0 0-2h-3v-2.07A8 8 0 0 0 20 11a1 1 0 1 0-2 0 6 6 0 0 1-12 0Z" />
           </svg>
@@ -162,7 +162,7 @@ export default function VoiceRecorder({ onStop, startInTextMode = false }: Voice
         <button
           onClick={stopRecording}
           className="w-full py-4 rounded-xl font-medium text-base transition-all active:scale-[0.98]"
-          style={{ backgroundColor: 'var(--accent)', color: 'var(--bg-primary)' }}
+          style={{ backgroundColor: 'var(--accent)', color: '#1A1A1A' }}
         >
           Bericht analysieren
         </button>

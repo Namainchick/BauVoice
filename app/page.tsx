@@ -84,7 +84,7 @@ export default function DashboardPage() {
           <button
             onClick={() => router.push('/neu')}
             className="px-6 py-2.5 rounded-full text-sm font-medium transition-all active:scale-95"
-            style={{ backgroundColor: 'var(--accent)', color: 'var(--bg-primary)' }}
+            style={{ backgroundColor: 'var(--accent)', color: '#1A1A1A' }}
           >
             Ersten Bericht erstellen
           </button>

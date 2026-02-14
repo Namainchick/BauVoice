@@ -49,7 +49,7 @@ export default function SettingsPage() {
           </p>
           <button onClick={handleReset}
             className="px-4 py-2 rounded-lg text-xs font-medium transition-all active:scale-95"
-            style={{ backgroundColor: 'var(--accent)', color: 'var(--bg-primary)' }}>
+            style={{ backgroundColor: 'var(--accent)', color: '#1A1A1A' }}>
             Demo zurücksetzen
           </button>
         </div>
@@ -86,7 +86,7 @@ export default function SettingsPage() {
 
       {toast && (
         <div className="fixed bottom-20 left-1/2 -translate-x-1/2 px-6 py-3 rounded-full text-sm shadow-lg animate-slide-up z-50"
-          style={{ backgroundColor: 'var(--accent)', color: 'var(--bg-primary)' }}>
+          style={{ backgroundColor: 'var(--accent)', color: '#1A1A1A' }}>
           {toast}
         </div>
       )}

@@ -10,9 +10,9 @@ interface ReportCardProps {
 }
 
 const STATUS_STYLES: Record<string, { bg: string; text: string; label: string }> = {
-  entwurf: { bg: 'rgba(255, 184, 77, 0.15)', text: '#FFB84D', label: 'Entwurf' },
-  vollstaendig: { bg: 'rgba(96, 165, 250, 0.15)', text: '#60A5FA', label: 'Vollständig' },
-  bestaetigt: { bg: 'rgba(41, 255, 191, 0.15)', text: '#29FFBF', label: 'Bestätigt' },
+  entwurf: { bg: 'rgba(245, 158, 11, 0.1)', text: '#D97706', label: 'Entwurf' },
+  vollstaendig: { bg: 'rgba(59, 130, 246, 0.1)', text: '#2563EB', label: 'Vollständig' },
+  bestaetigt: { bg: 'rgba(16, 185, 129, 0.1)', text: '#059669', label: 'Bestätigt' },
 };
 
 function completenessColor(pct: number): string {
@@ -38,6 +38,7 @@ export default function ReportCard({ entry, onClick, index }: ReportCardProps) {
       style={{
         backgroundColor: 'var(--bg-surface)',
         borderColor: 'var(--border-subtle)',
+        boxShadow: 'var(--shadow-card)',
       }}
     >
       <div className="flex items-start justify-between gap-3">

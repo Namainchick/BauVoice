@@ -37,7 +37,7 @@ export default function AIChat() {
           <div className="flex gap-3">
             <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
               style={{ backgroundColor: 'var(--accent)' }}>
-              <span className="text-xs font-bold" style={{ color: 'var(--bg-primary)' }}>KI</span>
+              <span className="text-xs font-bold" style={{ color: '#1A1A1A' }}>KI</span>
             </div>
             <p className="text-sm pt-1" style={{ color: 'var(--text-primary)' }}>{q.frage}</p>
           </div>
@@ -64,7 +64,7 @@ export default function AIChat() {
           disabled={isLoading} />
         <button onClick={() => handleAnswer(textInput)} disabled={isLoading || !textInput.trim()}
           className="px-4 py-3 rounded-xl text-sm font-medium disabled:opacity-50 transition-all active:scale-95"
-          style={{ backgroundColor: 'var(--accent)', color: 'var(--bg-primary)' }}>
+          style={{ backgroundColor: 'var(--accent)', color: '#1A1A1A' }}>
           {isLoading ? '...' : 'Senden'}
         </button>
       </div>

@@ -71,7 +71,7 @@ export default function FollowUpInput() {
         )}
         <button onClick={() => handleSubmit(text)} disabled={isLoading || !text.trim()}
           className="flex-1 py-2 rounded-xl text-sm font-medium disabled:opacity-50 transition-all active:scale-95"
-          style={{ backgroundColor: 'var(--accent)', color: 'var(--bg-primary)' }}>
+          style={{ backgroundColor: 'var(--accent)', color: '#1A1A1A' }}>
           {isLoading ? 'Wird aktualisiert...' : 'Ergänzen'}
         </button>
         <button onClick={() => { setIsOpen(false); setText(''); }}
