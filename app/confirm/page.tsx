@@ -10,20 +10,20 @@ export default function ConfirmPage() {
   const { state } = useReport();
 
   useEffect(() => {
-    if (!state.report) {
-      router.push('/');
-    }
+    if (!state.report) router.push('/');
   }, [state.report, router]);
 
   if (!state.report) return null;
 
   return (
-    <div className="flex flex-col min-h-screen p-6">
+    <div className="flex flex-col min-h-screen p-6 animate-slide-right">
       <div className="text-center mb-6 pt-4">
-        <h1 className="text-2xl font-bold text-gray-900">
-          Bau<span className="text-green-500">Voice</span>
+        <h1 className="text-2xl font-bold">
+          Bau<span style={{ color: 'var(--accent)' }}>Voice</span>
         </h1>
-        <p className="text-gray-500 mt-1">Bericht überprüfen</p>
+        <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>
+          Bericht überprüfen
+        </p>
       </div>
 
       <ConfirmReport />

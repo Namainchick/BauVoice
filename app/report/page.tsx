@@ -13,40 +13,61 @@ export default function ReportPage() {
   const { state, dispatch } = useReport();
 
   useEffect(() => {
-    if (!state.report) {
-      router.push('/');
-    }
+    if (!state.report) router.push('/');
   }, [state.report, router]);
 
   if (!state.report) return null;
 
+  const isViewOnly = state.report.status === 'bestaetigt';
+
   return (
-    <div className="flex flex-col min-h-screen p-6">
-      <div className="text-center mb-6 pt-4">
-        <h1 className="text-2xl font-bold text-gray-900">
-          Bau<span className="text-green-500">Voice</span>
+    <div className="flex flex-col min-h-screen p-6 animate-slide-right">
+      <div className="flex items-center justify-between mb-6 pt-4">
+        <button
+          onClick={() => router.push('/')}
+          className="text-sm transition-colors"
+          style={{ color: 'var(--text-tertiary)' }}
+        >
+          &larr; Zurück
+        </button>
+        <h1 className="text-lg font-bold">
+          Bau<span style={{ color: 'var(--accent)' }}>Voice</span>
         </h1>
+        <div className="w-12" />
       </div>
 
       <ReportView />
 
-      <AIChat />
+      {!isViewOnly && <AIChat />}
+      {!isViewOnly && <ProblemAction />}
+      {!isViewOnly && <FollowUpInput />}
 
-      <ProblemAction />
+      {!isViewOnly && (
+        <div className="mt-6 pb-8">
+          <button
+            onClick={() => {
+              dispatch({ type: 'SET_FLOW_STEP', payload: 'confirm' });
+              router.push('/confirm');
+            }}
+            className="w-full py-4 rounded-xl font-medium text-base transition-all active:scale-[0.98]"
+            style={{ backgroundColor: 'var(--accent)', color: 'var(--bg-primary)' }}
+          >
+            Bericht überprüfen & bestätigen
+          </button>
+        </div>
+      )}
 
-      <FollowUpInput />
-
-      <div className="mt-6 pb-8">
-        <button
-          onClick={() => {
-            dispatch({ type: 'SET_FLOW_STEP', payload: 'confirm' });
-            router.push('/confirm');
-          }}
-          className="w-full py-4 bg-green-500 text-white rounded-xl font-medium text-lg hover:bg-green-600 active:bg-green-700 transition-colors"
-        >
-          Bericht überprüfen & bestätigen
-        </button>
-      </div>
+      {isViewOnly && (
+        <div className="mt-6 pb-8">
+          <button
+            onClick={() => router.push('/')}
+            className="w-full py-4 rounded-xl font-medium text-base border transition-all active:scale-[0.98]"
+            style={{ borderColor: 'var(--border-medium)', color: 'var(--text-secondary)' }}
+          >
+            Zurück zur Übersicht
+          </button>
+        </div>
+      )}
     </div>
   );
 }

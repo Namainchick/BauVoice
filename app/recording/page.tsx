@@ -14,20 +14,23 @@ export default function RecordingPage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen p-6">
+    <div className="flex flex-col min-h-screen p-6 animate-slide-right">
       <div className="text-center mb-8 pt-8">
-        <h1 className="text-2xl font-bold text-gray-900">
-          Bau<span className="text-green-500">Voice</span>
+        <h1 className="text-2xl font-bold">
+          Bau<span style={{ color: 'var(--accent)' }}>Voice</span>
         </h1>
-        <p className="text-gray-500 mt-1">Sprich einfach drauf los</p>
+        <p className="mt-1" style={{ color: 'var(--text-secondary)' }}>
+          Sprich einfach drauf los
+        </p>
       </div>
 
       <VoiceRecorder onStop={handleStop} />
 
       <div className="mt-auto pt-4 pb-8">
         <button
-          onClick={() => router.push('/')}
-          className="text-gray-500 text-sm hover:text-gray-700 transition-colors"
+          onClick={() => router.push('/neu')}
+          className="text-sm transition-colors"
+          style={{ color: 'var(--text-tertiary)' }}
         >
           &larr; Zurück
         </button>

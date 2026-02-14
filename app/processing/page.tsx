@@ -29,7 +29,7 @@ export default function ProcessingPage() {
       } catch (error) {
         console.error('Gemini analysis failed:', error);
         alert('Analyse fehlgeschlagen. Bitte versuche es erneut.');
-        router.push('/');
+        router.push('/neu');
       }
     }
 
