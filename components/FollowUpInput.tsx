@@ -52,7 +52,7 @@ export default function FollowUpInput() {
 
   return (
     <div className="mt-6 space-y-3 rounded-xl p-4 border"
-      style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border-subtle)' }}>
+      style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border-subtle)', boxShadow: 'var(--shadow-card)' }}>
       <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>Was möchtest du ergänzen?</p>
       <textarea value={text} onChange={(e) => setText(e.target.value)}
         placeholder="Ach ja, vergessen — wir haben auch noch..."

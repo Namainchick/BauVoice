@@ -19,7 +19,7 @@ function completenessColor(pct: number): string {
   if (pct < 30) return '#ff6b6b';
   if (pct < 60) return '#FFB84D';
   if (pct < 80) return '#FBBF24';
-  return '#29FFBF';
+  return '#059669';
 }
 
 export default function ReportCard({ entry, onClick, index }: ReportCardProps) {
@@ -45,7 +45,7 @@ export default function ReportCard({ entry, onClick, index }: ReportCardProps) {
         <div className="flex-1 min-w-0">
           <span
             className="inline-block text-xs font-semibold px-2 py-0.5 rounded-full mb-2"
-            style={{ backgroundColor: 'var(--accent-dim)', color: 'var(--accent)' }}
+            style={{ backgroundColor: 'var(--accent-dim)', color: '#059669' }}
           >
             {REPORT_TYPE_LABELS[report.berichtstyp]}
           </span>

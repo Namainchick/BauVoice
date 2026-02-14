@@ -40,7 +40,7 @@ export default function SettingsPage() {
 
       <div className="space-y-4">
         <div className="rounded-xl p-4 border"
-          style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border-subtle)' }}>
+          style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border-subtle)', boxShadow: 'var(--shadow-card)' }}>
           <h3 className="text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>
             Demo zurücksetzen
           </h3>
@@ -55,7 +55,7 @@ export default function SettingsPage() {
         </div>
 
         <div className="rounded-xl p-4 border"
-          style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border-subtle)' }}>
+          style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border-subtle)', boxShadow: 'var(--shadow-card)' }}>
           <h3 className="text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>
             Alle Berichte löschen
           </h3>
@@ -70,7 +70,7 @@ export default function SettingsPage() {
         </div>
 
         <div className="rounded-xl p-4 border"
-          style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border-subtle)' }}>
+          style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border-subtle)', boxShadow: 'var(--shadow-card)' }}>
           <h3 className="text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>
             Über BauVoice
           </h3>

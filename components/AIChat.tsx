@@ -33,7 +33,7 @@ export default function AIChat() {
 
       {unanswered.map((q: FollowUpQuestion) => (
         <div key={q.id} className="rounded-xl p-4 space-y-3 border"
-          style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border-subtle)' }}>
+          style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border-subtle)', boxShadow: 'var(--shadow-card)' }}>
           <div className="flex gap-3">
             <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
               style={{ backgroundColor: 'var(--accent)' }}>
@@ -46,7 +46,7 @@ export default function AIChat() {
               {q.quick_replies.map((reply, i) => (
                 <button key={i} onClick={() => handleAnswer(reply, q.id)} disabled={isLoading}
                   className="px-3 py-1.5 rounded-full text-xs font-medium border transition-colors disabled:opacity-50"
-                  style={{ borderColor: 'var(--accent)', color: 'var(--accent)' }}>
+                  style={{ borderColor: 'var(--accent)', color: '#059669' }}>
                   {reply}
                 </button>
               ))}

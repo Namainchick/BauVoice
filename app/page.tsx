@@ -42,7 +42,7 @@ export default function DashboardPage() {
     <div className="flex flex-col min-h-screen p-6 animate-fade-in">
       <div className="pt-6 mb-6">
         <h1 className="text-2xl font-bold">
-          Bau<span style={{ color: 'var(--accent)' }}>Voice</span>
+          Bau<span style={{ color: '#059669' }}>Voice</span>
         </h1>
         <p className="mt-1" style={{ color: 'var(--text-secondary)' }}>
           {getGreeting()} — {thisWeek} {thisWeek === 1 ? 'Bericht' : 'Berichte'} diese Woche
@@ -51,7 +51,7 @@ export default function DashboardPage() {
 
       <div
         className="rounded-xl p-3 mb-4 text-xs text-center"
-        style={{ backgroundColor: 'var(--accent-dim)', color: 'var(--accent)' }}
+        style={{ backgroundColor: 'var(--accent-dim)', color: '#059669' }}
       >
         Demo-Modus — Erstelle deinen eigenen Bericht oder teste mit Beispieldaten
       </div>

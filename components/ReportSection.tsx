@@ -13,7 +13,7 @@ export default function ReportSection({ title, children, isEmpty = false, defaul
   const [isOpen, setIsOpen] = useState(defaultOpen);
 
   return (
-    <div className="rounded-xl overflow-hidden border" style={{ borderColor: 'var(--border-subtle)' }}>
+    <div className="rounded-xl overflow-hidden border" style={{ borderColor: 'var(--border-subtle)', boxShadow: 'var(--shadow-card)' }}>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="w-full flex items-center justify-between p-4 text-left transition-colors"

@@ -8,7 +8,7 @@ function completenessColor(pct: number): string {
   if (pct < 30) return 'var(--danger)';
   if (pct < 60) return 'var(--warning)';
   if (pct < 80) return '#FBBF24';
-  return 'var(--accent)';
+  return '#059669';
 }
 
 export default function ReportView() {
@@ -22,7 +22,7 @@ export default function ReportView() {
     <div className="space-y-3 animate-fade-in">
       <div className="flex items-center justify-between">
         <span className="text-xs font-semibold px-2.5 py-1 rounded-full"
-          style={{ backgroundColor: 'var(--accent-dim)', color: 'var(--accent)' }}>
+          style={{ backgroundColor: 'var(--accent-dim)', color: '#059669' }}>
           {REPORT_TYPE_LABELS[report.berichtstyp]}
         </span>
         <span className="text-sm font-medium" style={{ color: completenessColor(report.vollstaendigkeit) }}>
@@ -59,7 +59,7 @@ export default function ReportView() {
             {report.mitarbeiter.map((m, i) => (
               <li key={i} className="text-sm flex items-center gap-2">
                 <span className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium"
-                  style={{ backgroundColor: 'var(--accent-dim)', color: 'var(--accent)' }}>
+                  style={{ backgroundColor: 'var(--accent-dim)', color: '#059669' }}>
                   {m.charAt(0).toUpperCase()}
                 </span>
                 <span style={{ color: 'var(--text-primary)' }}>{m}</span>

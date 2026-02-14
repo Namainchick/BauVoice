@@ -56,10 +56,10 @@ export default function ConfirmReport() {
   return (
     <div className="space-y-6">
       <div className="rounded-xl p-5 space-y-3 border"
-        style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border-subtle)' }}>
+        style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border-subtle)', boxShadow: 'var(--shadow-card)' }}>
         <div className="flex items-center gap-2">
           <span className="text-xs font-semibold px-2.5 py-1 rounded-full"
-            style={{ backgroundColor: 'var(--accent-dim)', color: 'var(--accent)' }}>
+            style={{ backgroundColor: 'var(--accent-dim)', color: '#059669' }}>
             {REPORT_TYPE_LABELS[report.berichtstyp]}
           </span>
         </div>
@@ -71,7 +71,7 @@ export default function ConfirmReport() {
           <div className="flex-1 h-1.5 rounded-full" style={{ backgroundColor: 'var(--border-subtle)' }}>
             <div className="h-1.5 rounded-full" style={{ width: `${report.vollstaendigkeit}%`, backgroundColor: 'var(--accent)' }} />
           </div>
-          <span className="text-sm font-medium" style={{ color: 'var(--accent)' }}>{report.vollstaendigkeit}%</span>
+          <span className="text-sm font-medium" style={{ color: '#059669' }}>{report.vollstaendigkeit}%</span>
         </div>
       </div>
 

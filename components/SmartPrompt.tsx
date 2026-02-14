@@ -46,7 +46,7 @@ export default function SmartPrompt() {
       {activeTag && (
         <div
           className="rounded-xl p-3 text-xs animate-fade-in"
-          style={{ backgroundColor: 'var(--accent-dim)', color: 'var(--accent)' }}
+          style={{ backgroundColor: 'var(--accent-dim)', color: '#059669' }}
         >
           {KEYWORDS.find((kw) => kw.label === activeTag)?.beispiel}
         </div>
