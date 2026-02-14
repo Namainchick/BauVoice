@@ -1,44 +1,106 @@
 'use client';
 
+import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useReport } from '@/lib/context/ReportContext';
-import SmartPrompt from '@/components/SmartPrompt';
+import ReportCard from '@/components/ReportCard';
 
-export default function StartPage() {
+function getGreeting(): string {
+  const h = new Date().getHours();
+  if (h < 12) return 'Guten Morgen';
+  if (h < 18) return 'Guten Tag';
+  return 'Guten Abend';
+}
+
+export default function DashboardPage() {
   const router = useRouter();
-  const { dispatch } = useReport();
+  const { state, dispatch } = useReport();
+  const [search, setSearch] = useState('');
 
-  const handleStartRecording = () => {
-    dispatch({ type: 'SET_FLOW_STEP', payload: 'recording' });
-    router.push('/recording');
+  const filtered = useMemo(() => {
+    if (!search.trim()) return state.savedReports;
+    const q = search.toLowerCase();
+    return state.savedReports.filter(
+      (r) =>
+        r.report.allgemeine_informationen.projekt.toLowerCase().includes(q) ||
+        r.report.berichtstyp.toLowerCase().includes(q)
+    );
+  }, [state.savedReports, search]);
+
+  const thisWeek = state.savedReports.filter((r) => {
+    const diff = Date.now() - new Date(r.savedAt).getTime();
+    return diff < 7 * 86400000;
+  }).length;
+
+  const handleViewReport = (entry: typeof state.savedReports[0]) => {
+    dispatch({ type: 'VIEW_SAVED_REPORT', payload: entry });
+    dispatch({ type: 'SET_FLOW_STEP', payload: 'report' });
+    router.push('/report');
   };
 
   return (
-    <div className="flex flex-col min-h-screen p-6">
-      <div className="text-center mb-8 pt-8">
-        <h1 className="text-3xl font-bold text-gray-900">
-          Bau<span className="text-green-500">Voice</span>
+    <div className="flex flex-col min-h-screen p-6 animate-fade-in">
+      <div className="pt-6 mb-6">
+        <h1 className="text-2xl font-bold">
+          Bau<span style={{ color: 'var(--accent)' }}>Voice</span>
         </h1>
-        <p className="text-gray-500 mt-2">KI-Sprachassistent für Baustellenberichte</p>
+        <p className="mt-1" style={{ color: 'var(--text-secondary)' }}>
+          {getGreeting()} — {thisWeek} {thisWeek === 1 ? 'Bericht' : 'Berichte'} diese Woche
+        </p>
       </div>
 
-      <SmartPrompt />
-
-      <div className="flex-1" />
-
-      <div className="flex flex-col items-center gap-4 pb-8">
-        <button
-          onClick={handleStartRecording}
-          className="w-20 h-20 rounded-full bg-green-500 hover:bg-green-600 active:bg-green-700 text-white flex items-center justify-center shadow-lg hover:shadow-xl transition-all active:scale-95"
-          aria-label="Aufnahme starten"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-10 h-10">
-            <path d="M12 1a4 4 0 0 0-4 4v7a4 4 0 0 0 8 0V5a4 4 0 0 0-4-4Z" />
-            <path d="M6 11a1 1 0 0 0-2 0 8 8 0 0 0 7 7.93V21H8a1 1 0 1 0 0 2h8a1 1 0 1 0 0-2h-3v-2.07A8 8 0 0 0 20 11a1 1 0 1 0-2 0 6 6 0 0 1-12 0Z" />
-          </svg>
-        </button>
-        <span className="text-gray-500 text-sm">Aufnahme starten</span>
+      <div
+        className="rounded-xl p-3 mb-4 text-xs text-center"
+        style={{ backgroundColor: 'var(--accent-dim)', color: 'var(--accent)' }}
+      >
+        Demo-Modus — Erstelle deinen eigenen Bericht oder teste mit Beispieldaten
       </div>
+
+      <div className="mb-4">
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Berichte suchen..."
+          className="w-full px-4 py-3 rounded-xl text-sm border focus:outline-none"
+          style={{
+            backgroundColor: 'var(--bg-surface)',
+            borderColor: 'var(--border-subtle)',
+            color: 'var(--text-primary)',
+          }}
+        />
+      </div>
+
+      {filtered.length === 0 ? (
+        <div className="flex-1 flex flex-col items-center justify-center gap-4 py-12">
+          <div className="w-16 h-16 rounded-full flex items-center justify-center" style={{ backgroundColor: 'var(--bg-surface)' }}>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" className="w-8 h-8" style={{ color: 'var(--text-tertiary)' }}>
+              <path d="M12 4v16m-8-8h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+            </svg>
+          </div>
+          <p style={{ color: 'var(--text-secondary)' }}>
+            {search ? 'Keine Berichte gefunden' : 'Noch keine Berichte'}
+          </p>
+          <button
+            onClick={() => router.push('/neu')}
+            className="px-6 py-2.5 rounded-full text-sm font-medium transition-all active:scale-95"
+            style={{ backgroundColor: 'var(--accent)', color: 'var(--bg-primary)' }}
+          >
+            Ersten Bericht erstellen
+          </button>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {filtered.map((entry, i) => (
+            <ReportCard
+              key={entry.id}
+              entry={entry}
+              index={i}
+              onClick={() => handleViewReport(entry)}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
