@@ -13,6 +13,48 @@ function getModel() {
   });
 }
 
+function sanitizeResult(raw: unknown): GeminiAnalysisResult {
+  const obj = (raw ?? {}) as Record<string, unknown>;
+  const report = (obj.report ?? {}) as Record<string, unknown>;
+
+  // Sanitize allgemeine_informationen sub-fields
+  const rawInfo = (report.allgemeine_informationen ?? {}) as Record<string, unknown>;
+  const allgemeine_informationen = {
+    ...rawInfo,
+    projekt: typeof rawInfo.projekt === 'string' ? rawInfo.projekt : 'Unbekanntes Projekt',
+    datum: typeof rawInfo.datum === 'string' ? rawInfo.datum : new Date().toISOString().split('T')[0],
+    erstellt_von: typeof rawInfo.erstellt_von === 'string' ? rawInfo.erstellt_von : 'Unbekannt',
+  };
+
+  // Helper: ensure value is an array, defaulting to []
+  const ensureArray = (val: unknown): unknown[] =>
+    Array.isArray(val) ? val : [];
+
+  const sanitizedReport = {
+    ...report,
+    berichtstyp: typeof report.berichtstyp === 'string' ? report.berichtstyp : 'bautagesbericht',
+    allgemeine_informationen,
+    leistungen: ensureArray(report.leistungen),
+    materialien: ensureArray(report.materialien),
+    geraete: ensureArray(report.geraete),
+    mitarbeiter: ensureArray(report.mitarbeiter),
+    bilder: ensureArray(report.bilder),
+    besondere_vorkommnisse: typeof report.besondere_vorkommnisse === 'string'
+      ? report.besondere_vorkommnisse
+      : '',
+    vollstaendigkeit: typeof report.vollstaendigkeit === 'number'
+      ? report.vollstaendigkeit
+      : 0,
+    status: typeof report.status === 'string' ? report.status : 'entwurf',
+  };
+
+  return {
+    report: sanitizedReport as GeminiAnalysisResult['report'],
+    questions: ensureArray(obj.questions) as GeminiAnalysisResult['questions'],
+    problems: ensureArray(obj.problems) as GeminiAnalysisResult['problems'],
+  };
+}
+
 function cleanJsonResponse(text: string): string {
   let cleaned = text.trim();
   if (cleaned.startsWith('```json')) {
@@ -42,8 +84,8 @@ Analysiere das Transkript und erstelle den strukturierten Bericht als JSON.`;
   const result = await model.generateContent(prompt);
   const responseText = result.response.text();
   const cleaned = cleanJsonResponse(responseText);
-  const parsed = JSON.parse(cleaned) as GeminiAnalysisResult;
-  return parsed;
+  const parsed = JSON.parse(cleaned);
+  return sanitizeResult(parsed);
 }
 
 export async function mergeFollowUp(
@@ -67,6 +109,6 @@ Merge die neue Information und antworte als JSON.`;
   const result = await model.generateContent(prompt);
   const responseText = result.response.text();
   const cleaned = cleanJsonResponse(responseText);
-  const parsed = JSON.parse(cleaned) as GeminiAnalysisResult;
-  return parsed;
+  const parsed = JSON.parse(cleaned);
+  return sanitizeResult(parsed);
 }
