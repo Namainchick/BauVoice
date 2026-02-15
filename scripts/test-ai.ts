@@ -4,8 +4,7 @@ import { resolve } from 'path';
 // Load .env.local BEFORE importing gemini (it reads API key at module level)
 config({ path: resolve(__dirname, '../.env.local') });
 
-// Now safe to import
-import { analyzeTranscript, mergeFollowUp } from '@/lib/services/gemini';
+// Types can be statically imported (no runtime effect)
 import type { GeminiAnalysisResult, FollowUpQuestion, Report } from '@/lib/types/report';
 
 // ─── Colors ───
@@ -91,6 +90,9 @@ const VALID_REPORT_TYPES = [
 
 async function main() {
   console.log(`\n${CYAN}=== BauVoice KI-Tests ===${RESET}\n`);
+
+  // Dynamic import so env vars are loaded before module init
+  const { analyzeTranscript, mergeFollowUp } = await import('@/lib/services/gemini');
 
   let report: Report;
   let questions: FollowUpQuestion[];
