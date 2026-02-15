@@ -13,7 +13,7 @@ import ReportView from '@/components/ReportView';
 import AIChat from '@/components/AIChat';
 import ProblemAction from '@/components/ProblemAction';
 import UnifiedInput from '@/components/UnifiedInput';
-import { REPORT_TYPE_LABELS } from '@/lib/types/report';
+import { REPORT_TYPE_LABELS, Report, FollowUpQuestion, DetectedProblem } from '@/lib/types/report';
 import { getReportStats, formatDate } from '@/lib/utils/reportHelpers';
 
 type Phase = 'idle' | 'recording' | 'processing' | 'report' | 'confirmed';
@@ -22,19 +22,44 @@ export default function NeuPage() {
   const router = useRouter();
   const { state, dispatch } = useReport();
 
-  const [phase, setPhase] = useState<Phase>('idle');
+  const isEditMode = state.isEditing && !!state.report;
+  const [phase, setPhase] = useState<Phase>(isEditMode ? 'report' : 'idle');
   const [transcript, setTranscript] = useState('');
   const [interimText, setInterimText] = useState('');
   const [seconds, setSeconds] = useState(0);
   const [isRecording, setIsRecording] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [followUpLoading, setFollowUpLoading] = useState(false);
+  const editQuestionsLoaded = useRef(false);
+  const previousStateRef = useRef<{ report: Report; questions: FollowUpQuestion[]; problems: DetectedProblem[] } | null>(null);
+  const [showUndo, setShowUndo] = useState(false);
+  const undoTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const recognitionRef = useRef<any>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const supported = typeof window !== 'undefined' && isSpeechRecognitionSupported();
+
+  // Edit mode: if report is incomplete and no questions, ask AI for follow-ups
+  useEffect(() => {
+    if (!isEditMode || !state.report || editQuestionsLoaded.current) return;
+    if (state.questions.length > 0) return;
+    if (state.report.vollstaendigkeit >= 100) return;
+
+    editQuestionsLoaded.current = true;
+    (async () => {
+      setFollowUpLoading(true);
+      try {
+        const result = await mergeFollowUp(state.report!, 'Welche Informationen fehlen noch in diesem Bericht? Bitte stelle Rückfragen.', []);
+        dispatch({ type: 'MERGE_FOLLOW_UP_RESULT', payload: { result } });
+      } catch (err) {
+        console.error('Failed to generate edit follow-ups:', err);
+      } finally {
+        setFollowUpLoading(false);
+      }
+    })();
+  }, [isEditMode, state.report, state.questions.length, dispatch]);
 
   // Timer
   useEffect(() => {
@@ -108,19 +133,41 @@ export default function NeuPage() {
     }
   }, [dispatch]);
 
-  // Follow-up
-  const handleFollowUp = useCallback(async (input: string) => {
-    if (!state.report || !input.trim()) return;
+  // Centralized merge handler with lock guard
+  const handleMergeInput = useCallback(async (input: string) => {
+    if (!state.report || !input.trim() || followUpLoading) return;
+
+    // Save current state for undo
+    previousStateRef.current = {
+      report: state.report,
+      questions: state.questions,
+      problems: state.problems,
+    };
+
     setFollowUpLoading(true);
     try {
-      const result = await mergeFollowUp(state.report, input);
+      const result = await mergeFollowUp(state.report, input, state.questions);
       dispatch({ type: 'MERGE_FOLLOW_UP_RESULT', payload: { result } });
+
+      // Show undo toast
+      setShowUndo(true);
+      if (undoTimerRef.current) clearTimeout(undoTimerRef.current);
+      undoTimerRef.current = setTimeout(() => setShowUndo(false), 5000);
     } catch (err) {
       console.error('Follow-up merge failed:', err);
+      previousStateRef.current = null;
     } finally {
       setFollowUpLoading(false);
     }
-  }, [state.report, dispatch]);
+  }, [state.report, state.questions, state.problems, followUpLoading, dispatch]);
+
+  const handleUndo = useCallback(() => {
+    if (!previousStateRef.current) return;
+    dispatch({ type: 'SET_ANALYSIS_RESULT', payload: previousStateRef.current });
+    previousStateRef.current = null;
+    setShowUndo(false);
+    if (undoTimerRef.current) clearTimeout(undoTimerRef.current);
+  }, [dispatch]);
 
   // Confirm
   const handleConfirm = useCallback(() => {
@@ -141,13 +188,16 @@ export default function NeuPage() {
 
   // Cleanup on unmount
   useEffect(() => {
-    return () => { recognitionRef.current?.stop(); };
+    return () => {
+      recognitionRef.current?.stop();
+      if (undoTimerRef.current) clearTimeout(undoTimerRef.current);
+    };
   }, []);
 
   // ─── PHASE: IDLE ───
   if (phase === 'idle') {
     return (
-      <div className="flex flex-col min-h-screen p-6 animate-fade-in">
+      <div className="flex flex-col min-h-screen p-6 animate-fade-in max-w-2xl mx-auto w-full">
         <div className="pt-6 mb-6">
           <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>
             Neuer <span style={{ color: '#059669' }}>Bericht</span>
@@ -213,7 +263,7 @@ export default function NeuPage() {
   if (phase === 'recording') {
     const currentText = transcript || interimText;
     return (
-      <div className="flex flex-col min-h-screen p-6 animate-fade-in">
+      <div className="flex flex-col min-h-screen p-6 animate-fade-in max-w-2xl mx-auto w-full">
         <div className="pt-6 mb-6 text-center">
           <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>
             Bau<span style={{ color: '#059669' }}>Voice</span>
@@ -267,7 +317,7 @@ export default function NeuPage() {
   if (phase === 'processing') {
     if (error) {
       return (
-        <div className="flex flex-col min-h-screen items-center justify-center p-6">
+        <div className="flex flex-col min-h-screen items-center justify-center p-6 max-w-2xl mx-auto w-full">
           <div className="w-full max-w-sm rounded-2xl p-6 text-center border"
             style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border-subtle)', boxShadow: 'var(--shadow-card)' }}>
             <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4"
@@ -291,7 +341,7 @@ export default function NeuPage() {
     }
 
     return (
-      <div className="flex flex-col min-h-screen items-center justify-center p-6">
+      <div className="flex flex-col min-h-screen items-center justify-center p-6 max-w-2xl mx-auto w-full">
         <ProcessingState />
       </div>
     );
@@ -300,7 +350,7 @@ export default function NeuPage() {
   // ─── PHASE: CONFIRMED ───
   if (phase === 'confirmed' && state.report) {
     return (
-      <div className="flex flex-col items-center justify-center gap-6 p-6 py-12 min-h-screen">
+      <div className="flex flex-col items-center justify-center gap-6 p-6 py-12 min-h-screen max-w-2xl mx-auto w-full">
         <div className="w-20 h-20 rounded-full flex items-center justify-center animate-zoom-in"
           style={{ backgroundColor: 'var(--accent)' }}>
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-10 h-10" style={{ fill: '#1A1A1A' }}>
@@ -333,8 +383,12 @@ export default function NeuPage() {
   if (phase === 'report' && state.report) {
     const report = state.report;
 
+    const inputPlaceholder = state.questions.length > 0
+      ? 'Antwort oder neue Info eingeben...'
+      : 'Noch etwas ergänzen...';
+
     return (
-      <div className="flex flex-col min-h-screen p-6 animate-fade-in">
+      <div className="flex flex-col min-h-screen p-6 animate-fade-in max-w-5xl mx-auto w-full">
         <div className="pt-4 mb-6">
           <h1 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>
             Bau<span style={{ color: '#059669' }}>Voice</span>
@@ -342,17 +396,18 @@ export default function NeuPage() {
         </div>
 
         <ReportView />
-        <AIChat />
-        <ProblemAction />
+        <AIChat onAnswer={handleMergeInput} isMergeLocked={followUpLoading} />
 
         {/* Always-visible follow-up input */}
-        <div className="mt-6">
+        <div className="mt-4">
           <UnifiedInput
-            onSubmit={handleFollowUp}
-            placeholder="Noch etwas ergänzen..."
+            onSubmit={handleMergeInput}
+            placeholder={inputPlaceholder}
             isLoading={followUpLoading}
           />
         </div>
+
+        <ProblemAction />
 
         {/* Confirm section */}
         <div className="mt-6 rounded-xl p-5 space-y-3 border"
@@ -381,6 +436,19 @@ export default function NeuPage() {
             Bericht bestätigen & speichern
           </button>
         </div>
+
+        {showUndo && (
+          <div className="fixed bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-3 px-5 py-3 rounded-full shadow-lg z-50 animate-slide-up"
+            style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border-medium)', boxShadow: 'var(--shadow-card)' }}>
+            <span className="text-sm" style={{ color: 'var(--text-primary)' }}>Bericht aktualisiert</span>
+            <button
+              onClick={handleUndo}
+              className="text-sm font-semibold px-3 py-1 rounded-full transition-all active:scale-95"
+              style={{ color: '#059669', backgroundColor: 'var(--accent-dim)' }}>
+              Rückgängig
+            </button>
+          </div>
+        )}
       </div>
     );
   }

@@ -16,12 +16,13 @@ export interface AppState {
   currentReportId: string | null;
   photos: string[];
   flowStep: FlowStep;
+  isEditing: boolean;
 }
 
 type Action =
   | { type: 'SET_TRANSCRIPT'; payload: string }
   | { type: 'SET_ANALYSIS_RESULT'; payload: GeminiAnalysisResult }
-  | { type: 'MERGE_FOLLOW_UP_RESULT'; payload: { answeredQuestionId?: string; result: GeminiAnalysisResult } }
+  | { type: 'MERGE_FOLLOW_UP_RESULT'; payload: { result: GeminiAnalysisResult } }
   | { type: 'UPDATE_REPORT'; payload: Report }
   | { type: 'SET_QUESTIONS'; payload: FollowUpQuestion[] }
   | { type: 'SET_PROBLEMS'; payload: DetectedProblem[] }
@@ -31,6 +32,7 @@ type Action =
   | { type: 'LOAD_SAVED_REPORTS'; payload: SavedReport[] }
   | { type: 'SET_CURRENT_REPORT_ID'; payload: string }
   | { type: 'VIEW_SAVED_REPORT'; payload: SavedReport }
+  | { type: 'EDIT_SAVED_REPORT'; payload: SavedReport }
   | { type: 'RESET' };
 
 const initialState: AppState = {
@@ -42,6 +44,7 @@ const initialState: AppState = {
   currentReportId: null,
   photos: [],
   flowStep: 'start',
+  isEditing: false,
 };
 
 function reportReducer(state: AppState, action: Action): AppState {
@@ -56,16 +59,14 @@ function reportReducer(state: AppState, action: Action): AppState {
         problems: action.payload.problems,
       };
     case 'MERGE_FOLLOW_UP_RESULT': {
-      const { answeredQuestionId, result } = action.payload;
-      // Remove the answered question, keep all other unanswered ones
-      const remaining = state.questions.filter((q) => q.id !== answeredQuestionId);
-      // Add only genuinely new questions from Gemini (avoid duplicates by frage text)
-      const existingTexts = new Set(remaining.map((q) => q.frage));
-      const newQuestions = result.questions.filter((q) => !existingTexts.has(q.frage));
+      const { result } = action.payload;
+      // Trust the AI: it sees the full updated report and only asks
+      // about genuinely missing info. No need to manually track which
+      // question was answered.
       return {
         ...state,
         report: result.report,
-        questions: [...remaining, ...newQuestions],
+        questions: result.questions,
         problems: result.problems,
       };
     }
@@ -83,8 +84,8 @@ function reportReducer(state: AppState, action: Action): AppState {
       const entry: SavedReport = {
         id: state.currentReportId || generateReportId(),
         report: confirmed,
-        questions: [],
-        problems: [],
+        questions: state.questions,
+        problems: state.problems,
         savedAt: new Date().toISOString(),
       };
       saveReport(entry);
@@ -108,6 +109,16 @@ function reportReducer(state: AppState, action: Action): AppState {
         questions: action.payload.questions,
         problems: action.payload.problems,
         currentReportId: action.payload.id,
+        isEditing: false,
+      };
+    case 'EDIT_SAVED_REPORT':
+      return {
+        ...state,
+        report: action.payload.report,
+        questions: action.payload.questions,
+        problems: action.payload.problems,
+        currentReportId: action.payload.id,
+        isEditing: true,
       };
     case 'RESET':
       return {

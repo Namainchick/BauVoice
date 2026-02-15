@@ -102,11 +102,16 @@ export const MERGE_PROMPT = `Du erhältst einen bestehenden Baustellenbericht al
 
 REGELN:
 1. Merge die neuen Informationen in den bestehenden Bericht
-2. NIEMALS bestehende Daten überschreiben oder löschen
-3. Nur ERGÄNZEN und AKTUALISIEREN
-4. Wenn neue Leistungen/Materialien/etc. genannt werden: zur bestehenden Liste hinzufügen
-5. Vollständigkeit neu berechnen
-6. Neue Nachfragen generieren falls nötig
-7. Neue Probleme erkennen falls nötig
+2. Wenn der Handwerker einen Wert KORRIGIERT (z.B. "5 kg statt 30 kg"), den alten Wert ERSETZEN — nicht doppelt eintragen
+3. Wenn das gleiche Material/Gerät/Leistung nochmal genannt wird mit neuem Wert: den bestehenden Eintrag AKTUALISIEREN, keinen Duplikat-Eintrag anlegen
+4. Wenn wirklich NEUE Leistungen/Materialien/etc. genannt werden (anderes Material, andere Arbeit): zur Liste hinzufügen
+5. Leere Einträge (menge: null/leer) entfernen wenn jetzt ein konkreter Wert vorliegt
+6. Vollständigkeit neu berechnen
+7. Nur Nachfragen generieren für Informationen die JETZT NOCH FEHLEN — bereits beantwortete Fragen NICHT erneut stellen
+8. Neue Probleme erkennen falls nötig
+
+WICHTIG zu Nachfragen:
+- Schau dir den aktualisierten Bericht an und frage NUR nach Dingen die noch leer/fehlend sind
+- Wenn der Handwerker gerade eine Frage beantwortet hat, stelle diese Frage NICHT erneut
 
 Antworte im gleichen JSON-Format wie bei der Erstanalyse.`;

@@ -2,7 +2,8 @@ import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { ReportProvider } from '@/lib/context/ReportContext';
-import BottomNav from '@/components/BottomNav';
+import { ViewModeProvider } from '@/lib/context/ViewModeContext';
+import AppShell from '@/components/AppShell';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -27,10 +28,11 @@ export default function RootLayout({
     <html lang="de">
       <body className={inter.className}>
         <ReportProvider>
-          <main className="max-w-md mx-auto min-h-screen pb-20">
-            {children}
-          </main>
-          <BottomNav />
+          <ViewModeProvider>
+            <AppShell>
+              {children}
+            </AppShell>
+          </ViewModeProvider>
         </ReportProvider>
       </body>
     </html>
