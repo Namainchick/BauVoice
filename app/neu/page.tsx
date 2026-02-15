@@ -130,9 +130,9 @@ export default function NeuPage() {
     }
   }, [dispatch]);
 
-  // Follow-up
-  const handleFollowUp = useCallback(async (input: string) => {
-    if (!state.report || !input.trim()) return;
+  // Centralized merge handler with lock guard
+  const handleMergeInput = useCallback(async (input: string) => {
+    if (!state.report || !input.trim() || followUpLoading) return;
     setFollowUpLoading(true);
     try {
       const result = await mergeFollowUp(state.report, input);
@@ -142,7 +142,7 @@ export default function NeuPage() {
     } finally {
       setFollowUpLoading(false);
     }
-  }, [state.report, dispatch]);
+  }, [state.report, dispatch, followUpLoading]);
 
   // Confirm
   const handleConfirm = useCallback(() => {
@@ -364,13 +364,13 @@ export default function NeuPage() {
         </div>
 
         <ReportView />
-        <AIChat />
+        <AIChat onAnswer={handleMergeInput} isMergeLocked={followUpLoading} />
         <ProblemAction />
 
         {/* Always-visible follow-up input */}
         <div className="mt-6">
           <UnifiedInput
-            onSubmit={handleFollowUp}
+            onSubmit={handleMergeInput}
             placeholder="Noch etwas ergänzen..."
             isLoading={followUpLoading}
           />

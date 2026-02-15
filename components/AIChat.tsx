@@ -2,25 +2,35 @@
 
 import { useState } from 'react';
 import { useReport } from '@/lib/context/ReportContext';
-import { mergeFollowUp } from '@/lib/services/gemini';
 import { FollowUpQuestion } from '@/lib/types/report';
 
-export default function AIChat() {
-  const { state, dispatch } = useReport();
-  const [isLoading, setIsLoading] = useState(false);
+interface AIChatProps {
+  onAnswer: (answer: string) => void;
+  isMergeLocked: boolean;
+}
+
+export default function AIChat({ onAnswer, isMergeLocked }: AIChatProps) {
+  const { state } = useReport();
   const [textInput, setTextInput] = useState('');
 
-  const handleAnswer = async (answer: string) => {
-    if (!state.report || !answer.trim()) return;
-    setIsLoading(true);
-    try {
-      const result = await mergeFollowUp(state.report, answer);
-      dispatch({ type: 'MERGE_FOLLOW_UP_RESULT', payload: { result } });
-    } catch (error) { console.error('Merge failed:', error); }
-    finally { setIsLoading(false); setTextInput(''); }
+  const handleQuickReply = (question: FollowUpQuestion, reply: string) => {
+    const contextualAnswer = `Antwort auf Frage: "${question.frage}" → ${reply}`;
+    onAnswer(contextualAnswer);
   };
 
-  if (state.questions.length === 0 && !isLoading) return null;
+  const handleTextSubmit = () => {
+    if (!textInput.trim()) return;
+    const firstQuestion = state.questions[0];
+    if (firstQuestion) {
+      const contextualAnswer = `Antwort auf Frage: "${firstQuestion.frage}" → ${textInput}`;
+      onAnswer(contextualAnswer);
+    } else {
+      onAnswer(textInput);
+    }
+    setTextInput('');
+  };
+
+  if (state.questions.length === 0 && !isMergeLocked) return null;
 
   return (
     <div className="space-y-4 mt-6">
@@ -41,7 +51,7 @@ export default function AIChat() {
           {q.quick_replies && q.quick_replies.length > 0 && (
             <div className="flex flex-wrap gap-2 pl-11">
               {q.quick_replies.map((reply, i) => (
-                <button key={i} onClick={() => handleAnswer(reply)} disabled={isLoading}
+                <button key={i} onClick={() => handleQuickReply(q, reply)} disabled={isMergeLocked}
                   className="px-3 py-1.5 rounded-full text-xs font-medium border transition-colors disabled:opacity-50"
                   style={{ borderColor: 'var(--accent)', color: '#059669' }}>
                   {reply}
@@ -54,19 +64,19 @@ export default function AIChat() {
 
       <div className="flex gap-2">
         <input type="text" value={textInput} onChange={(e) => setTextInput(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && handleAnswer(textInput)}
+          onKeyDown={(e) => e.key === 'Enter' && handleTextSubmit()}
           placeholder="Antwort eingeben..."
           className="flex-1 px-4 py-3 rounded-xl text-sm border focus:outline-none"
           style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border-subtle)', color: 'var(--text-primary)' }}
-          disabled={isLoading} />
-        <button onClick={() => handleAnswer(textInput)} disabled={isLoading || !textInput.trim()}
+          disabled={isMergeLocked} />
+        <button onClick={handleTextSubmit} disabled={isMergeLocked || !textInput.trim()}
           className="px-4 py-3 rounded-xl text-sm font-medium disabled:opacity-50 transition-all active:scale-95"
           style={{ backgroundColor: 'var(--accent)', color: '#1A1A1A' }}>
-          {isLoading ? '...' : 'Senden'}
+          {isMergeLocked ? '...' : 'Senden'}
         </button>
       </div>
 
-      {isLoading && (
+      {isMergeLocked && (
         <p className="text-xs text-center animate-pulse" style={{ color: 'var(--text-tertiary)' }}>
           Bericht wird aktualisiert...
         </p>
