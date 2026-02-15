@@ -13,7 +13,7 @@ import ReportView from '@/components/ReportView';
 import AIChat from '@/components/AIChat';
 import ProblemAction from '@/components/ProblemAction';
 import UnifiedInput from '@/components/UnifiedInput';
-import { REPORT_TYPE_LABELS } from '@/lib/types/report';
+import { REPORT_TYPE_LABELS, Report, FollowUpQuestion, DetectedProblem } from '@/lib/types/report';
 import { getReportStats, formatDate } from '@/lib/utils/reportHelpers';
 
 type Phase = 'idle' | 'recording' | 'processing' | 'report' | 'confirmed';
@@ -31,6 +31,9 @@ export default function NeuPage() {
   const [error, setError] = useState<string | null>(null);
   const [followUpLoading, setFollowUpLoading] = useState(false);
   const editQuestionsLoaded = useRef(false);
+  const previousStateRef = useRef<{ report: Report; questions: FollowUpQuestion[]; problems: DetectedProblem[] } | null>(null);
+  const [showUndo, setShowUndo] = useState(false);
+  const undoTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const recognitionRef = useRef<any>(null);
@@ -133,16 +136,38 @@ export default function NeuPage() {
   // Centralized merge handler with lock guard
   const handleMergeInput = useCallback(async (input: string) => {
     if (!state.report || !input.trim() || followUpLoading) return;
+
+    // Save current state for undo
+    previousStateRef.current = {
+      report: state.report,
+      questions: state.questions,
+      problems: state.problems,
+    };
+
     setFollowUpLoading(true);
     try {
       const result = await mergeFollowUp(state.report, input);
       dispatch({ type: 'MERGE_FOLLOW_UP_RESULT', payload: { result } });
+
+      // Show undo toast
+      setShowUndo(true);
+      if (undoTimerRef.current) clearTimeout(undoTimerRef.current);
+      undoTimerRef.current = setTimeout(() => setShowUndo(false), 5000);
     } catch (err) {
       console.error('Follow-up merge failed:', err);
+      previousStateRef.current = null;
     } finally {
       setFollowUpLoading(false);
     }
-  }, [state.report, dispatch, followUpLoading]);
+  }, [state.report, state.questions, state.problems, followUpLoading, dispatch]);
+
+  const handleUndo = useCallback(() => {
+    if (!previousStateRef.current) return;
+    dispatch({ type: 'SET_ANALYSIS_RESULT', payload: previousStateRef.current });
+    previousStateRef.current = null;
+    setShowUndo(false);
+    if (undoTimerRef.current) clearTimeout(undoTimerRef.current);
+  }, [dispatch]);
 
   // Confirm
   const handleConfirm = useCallback(() => {
@@ -163,7 +188,10 @@ export default function NeuPage() {
 
   // Cleanup on unmount
   useEffect(() => {
-    return () => { recognitionRef.current?.stop(); };
+    return () => {
+      recognitionRef.current?.stop();
+      if (undoTimerRef.current) clearTimeout(undoTimerRef.current);
+    };
   }, []);
 
   // ─── PHASE: IDLE ───
@@ -403,6 +431,19 @@ export default function NeuPage() {
             Bericht bestätigen & speichern
           </button>
         </div>
+
+        {showUndo && (
+          <div className="fixed bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-3 px-5 py-3 rounded-full shadow-lg z-50 animate-slide-up"
+            style={{ backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border-medium)', boxShadow: 'var(--shadow-card)' }}>
+            <span className="text-sm" style={{ color: 'var(--text-primary)' }}>Bericht aktualisiert</span>
+            <button
+              onClick={handleUndo}
+              className="text-sm font-semibold px-3 py-1 rounded-full transition-all active:scale-95"
+              style={{ color: '#059669', backgroundColor: 'var(--accent-dim)' }}>
+              Rückgängig
+            </button>
+          </div>
+        )}
       </div>
     );
   }
