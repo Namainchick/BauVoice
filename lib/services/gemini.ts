@@ -1,6 +1,6 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { SYSTEM_PROMPT, MERGE_PROMPT } from '@/lib/prompts/systemPrompt';
-import { GeminiAnalysisResult, Report } from '@/lib/types/report';
+import { FollowUpQuestion, GeminiAnalysisResult, Report } from '@/lib/types/report';
 
 const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY || '');
 
@@ -90,13 +90,19 @@ Analysiere das Transkript und erstelle den strukturierten Bericht als JSON.`;
 
 export async function mergeFollowUp(
   currentReport: Report,
-  newInput: string
+  newInput: string,
+  openQuestions?: FollowUpQuestion[]
 ): Promise<GeminiAnalysisResult> {
   const model = getModel();
+
+  const questionsContext = openQuestions && openQuestions.length > 0
+    ? `\n\nAktuell offene Nachfragen:\n${JSON.stringify(openQuestions.map(q => ({ id: q.id, frage: q.frage, typ: q.typ })), null, 2)}`
+    : '\n\nAktuell offene Nachfragen: Keine';
 
   const prompt = `${SYSTEM_PROMPT}
 
 ${MERGE_PROMPT}
+${questionsContext}
 
 Bestehender Bericht:
 ${JSON.stringify(currentReport, null, 2)}
