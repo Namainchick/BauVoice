@@ -9,21 +9,18 @@ export default function AIChat() {
   const { state, dispatch } = useReport();
   const [isLoading, setIsLoading] = useState(false);
   const [textInput, setTextInput] = useState('');
-  const [answeredQuestions, setAnsweredQuestions] = useState<Set<string>>(new Set());
 
   const handleAnswer = async (answer: string, questionId?: string) => {
     if (!state.report || !answer.trim()) return;
     setIsLoading(true);
-    if (questionId) setAnsweredQuestions((prev) => new Set(prev).add(questionId));
     try {
       const result = await mergeFollowUp(state.report, answer);
-      dispatch({ type: 'SET_ANALYSIS_RESULT', payload: result });
+      dispatch({ type: 'MERGE_FOLLOW_UP_RESULT', payload: { answeredQuestionId: questionId, result } });
     } catch (error) { console.error('Merge failed:', error); }
     finally { setIsLoading(false); setTextInput(''); }
   };
 
-  const unanswered = state.questions.filter((q) => !answeredQuestions.has(q.id));
-  if (unanswered.length === 0 && !isLoading) return null;
+  if (state.questions.length === 0 && !isLoading) return null;
 
   return (
     <div className="space-y-4 mt-6">
@@ -31,7 +28,7 @@ export default function AIChat() {
         KI-Nachfragen
       </h3>
 
-      {unanswered.map((q: FollowUpQuestion) => (
+      {state.questions.map((q: FollowUpQuestion) => (
         <div key={q.id} className="rounded-xl p-4 space-y-3 border"
           style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border-subtle)', boxShadow: 'var(--shadow-card)' }}>
           <div className="flex gap-3">

@@ -21,6 +21,7 @@ export interface AppState {
 type Action =
   | { type: 'SET_TRANSCRIPT'; payload: string }
   | { type: 'SET_ANALYSIS_RESULT'; payload: GeminiAnalysisResult }
+  | { type: 'MERGE_FOLLOW_UP_RESULT'; payload: { answeredQuestionId?: string; result: GeminiAnalysisResult } }
   | { type: 'UPDATE_REPORT'; payload: Report }
   | { type: 'SET_QUESTIONS'; payload: FollowUpQuestion[] }
   | { type: 'SET_PROBLEMS'; payload: DetectedProblem[] }
@@ -54,6 +55,20 @@ function reportReducer(state: AppState, action: Action): AppState {
         questions: action.payload.questions,
         problems: action.payload.problems,
       };
+    case 'MERGE_FOLLOW_UP_RESULT': {
+      const { answeredQuestionId, result } = action.payload;
+      // Remove the answered question, keep all other unanswered ones
+      const remaining = state.questions.filter((q) => q.id !== answeredQuestionId);
+      // Add only genuinely new questions from Gemini (avoid duplicates by frage text)
+      const existingTexts = new Set(remaining.map((q) => q.frage));
+      const newQuestions = result.questions.filter((q) => !existingTexts.has(q.frage));
+      return {
+        ...state,
+        report: result.report,
+        questions: [...remaining, ...newQuestions],
+        problems: result.problems,
+      };
+    }
     case 'UPDATE_REPORT':
       return { ...state, report: action.payload };
     case 'SET_QUESTIONS':

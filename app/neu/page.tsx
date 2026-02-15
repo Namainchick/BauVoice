@@ -114,7 +114,7 @@ export default function NeuPage() {
     setFollowUpLoading(true);
     try {
       const result = await mergeFollowUp(state.report, input);
-      dispatch({ type: 'SET_ANALYSIS_RESULT', payload: result });
+      dispatch({ type: 'MERGE_FOLLOW_UP_RESULT', payload: { result } });
     } catch (err) {
       console.error('Follow-up merge failed:', err);
     } finally {
