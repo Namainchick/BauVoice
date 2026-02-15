@@ -114,12 +114,4 @@ WICHTIG zu Nachfragen:
 - Schau dir den aktualisierten Bericht an und frage NUR nach Dingen die noch leer/fehlend sind
 - Wenn der Handwerker gerade eine Frage beantwortet hat, stelle diese Frage NICHT erneut
 
-KONTEXT — Offene Nachfragen:
-Die folgenden Nachfragen sind aktuell offen und wurden dem Handwerker angezeigt.
-Prüfe ob die neue Eingabe eine oder mehrere dieser Fragen beantwortet:
-- Wenn ja: Information in den Bericht einbauen, beantwortete Frage NICHT erneut stellen
-- Wenn nein: Eingabe als neue Information behandeln und mergen
-- Gemischte Eingaben sind möglich (teils Antwort, teils neue Info)
-- Bei kurzen Antworten (z.B. "5", "Thomas") prüfe ob sie zu einer offenen Frage passen
-
 Antworte im gleichen JSON-Format wie bei der Erstanalyse.`;

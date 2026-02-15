@@ -51,7 +51,7 @@ export default function NeuPage() {
     (async () => {
       setFollowUpLoading(true);
       try {
-        const result = await mergeFollowUp(state.report!, 'Welche Informationen fehlen noch in diesem Bericht? Bitte stelle Rückfragen.');
+        const result = await mergeFollowUp(state.report!, 'Welche Informationen fehlen noch in diesem Bericht? Bitte stelle Rückfragen.', []);
         dispatch({ type: 'MERGE_FOLLOW_UP_RESULT', payload: { result } });
       } catch (err) {
         console.error('Failed to generate edit follow-ups:', err);

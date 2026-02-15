@@ -96,7 +96,7 @@ export async function mergeFollowUp(
   const model = getModel();
 
   const questionsContext = openQuestions && openQuestions.length > 0
-    ? `\n\nAktuell offene Nachfragen:\n${JSON.stringify(openQuestions.map(q => ({ id: q.id, frage: q.frage, typ: q.typ })), null, 2)}`
+    ? `\n\nKONTEXT — Offene Nachfragen:\nDie folgenden Nachfragen sind aktuell offen und wurden dem Handwerker angezeigt.\nPrüfe ob die neue Eingabe eine oder mehrere dieser Fragen beantwortet:\n- Wenn ja: Information in den Bericht einbauen, beantwortete Frage NICHT erneut stellen\n- Wenn nein: Eingabe als neue Information behandeln und mergen\n- Gemischte Eingaben sind möglich (teils Antwort, teils neue Info)\n- Bei kurzen Antworten (z.B. "5", "Thomas") prüfe ob sie zu einer offenen Frage passen\n\nAktuell offene Nachfragen:\n${JSON.stringify(openQuestions.map(q => ({ id: q.id, frage: q.frage, typ: q.typ })), null, 2)}`
     : '\n\nAktuell offene Nachfragen: Keine';
 
   const prompt = `${SYSTEM_PROMPT}
