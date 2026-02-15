@@ -35,7 +35,7 @@ export default function ReportView() {
           style={{ width: `${report.vollstaendigkeit}%`, backgroundColor: completenessColor(report.vollstaendigkeit) }} />
       </div>
 
-      <div className="space-y-2 mt-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
         <ReportSection title="Allgemeine Informationen" defaultOpen>
           <div className="space-y-2 text-sm">
             {[

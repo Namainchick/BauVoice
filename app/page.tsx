@@ -32,6 +32,8 @@ export default function DashboardPage() {
     return diff < 7 * 86400000;
   }).length;
 
+  const confirmedCount = state.savedReports.filter(r => r.report.status === 'bestaetigt').length;
+
   const handleViewReport = (entry: typeof state.savedReports[0]) => {
     dispatch({ type: 'VIEW_SAVED_REPORT', payload: entry });
     dispatch({ type: 'SET_FLOW_STEP', payload: 'report' });
@@ -54,6 +56,21 @@ export default function DashboardPage() {
         style={{ backgroundColor: 'var(--accent-dim)', color: '#059669' }}
       >
         Demo-Modus — Erstelle deinen eigenen Bericht oder teste mit Beispieldaten
+      </div>
+
+      <div className="grid grid-cols-3 gap-3 mb-4">
+        <div className="rounded-xl p-4 border text-center" style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border-subtle)', boxShadow: 'var(--shadow-card)' }}>
+          <p className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>{state.savedReports.length}</p>
+          <p className="text-xs mt-1" style={{ color: 'var(--text-secondary)' }}>Berichte gesamt</p>
+        </div>
+        <div className="rounded-xl p-4 border text-center" style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border-subtle)', boxShadow: 'var(--shadow-card)' }}>
+          <p className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>{thisWeek}</p>
+          <p className="text-xs mt-1" style={{ color: 'var(--text-secondary)' }}>Diese Woche</p>
+        </div>
+        <div className="rounded-xl p-4 border text-center" style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border-subtle)', boxShadow: 'var(--shadow-card)' }}>
+          <p className="text-2xl font-bold" style={{ color: '#059669' }}>{confirmedCount}</p>
+          <p className="text-xs mt-1" style={{ color: 'var(--text-secondary)' }}>Bestätigt</p>
+        </div>
       </div>
 
       <div className="mb-4">
@@ -90,7 +107,7 @@ export default function DashboardPage() {
           </button>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
           {filtered.map((entry, i) => (
             <ReportCard
               key={entry.id}

@@ -16,7 +16,7 @@ export default function ReportPage() {
   if (!state.report) return null;
 
   return (
-    <div className="flex flex-col min-h-screen p-6 animate-fade-in">
+    <div className="flex flex-col min-h-screen p-6 animate-fade-in max-w-5xl mx-auto w-full">
       <div className="flex items-center justify-between mb-6 pt-4">
         <button
           onClick={() => router.push('/')}

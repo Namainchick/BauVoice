@@ -31,7 +31,7 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen p-6 animate-fade-in">
+    <div className="flex flex-col min-h-screen p-6 animate-fade-in max-w-2xl mx-auto w-full">
       <div className="pt-6 mb-8">
         <h1 className="text-2xl font-bold">
           Einstellungen

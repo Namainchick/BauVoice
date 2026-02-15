@@ -147,7 +147,7 @@ export default function NeuPage() {
   // ─── PHASE: IDLE ───
   if (phase === 'idle') {
     return (
-      <div className="flex flex-col min-h-screen p-6 animate-fade-in">
+      <div className="flex flex-col min-h-screen p-6 animate-fade-in max-w-2xl mx-auto w-full">
         <div className="pt-6 mb-6">
           <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>
             Neuer <span style={{ color: '#059669' }}>Bericht</span>
@@ -213,7 +213,7 @@ export default function NeuPage() {
   if (phase === 'recording') {
     const currentText = transcript || interimText;
     return (
-      <div className="flex flex-col min-h-screen p-6 animate-fade-in">
+      <div className="flex flex-col min-h-screen p-6 animate-fade-in max-w-2xl mx-auto w-full">
         <div className="pt-6 mb-6 text-center">
           <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>
             Bau<span style={{ color: '#059669' }}>Voice</span>
@@ -267,7 +267,7 @@ export default function NeuPage() {
   if (phase === 'processing') {
     if (error) {
       return (
-        <div className="flex flex-col min-h-screen items-center justify-center p-6">
+        <div className="flex flex-col min-h-screen items-center justify-center p-6 max-w-2xl mx-auto w-full">
           <div className="w-full max-w-sm rounded-2xl p-6 text-center border"
             style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border-subtle)', boxShadow: 'var(--shadow-card)' }}>
             <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4"
@@ -291,7 +291,7 @@ export default function NeuPage() {
     }
 
     return (
-      <div className="flex flex-col min-h-screen items-center justify-center p-6">
+      <div className="flex flex-col min-h-screen items-center justify-center p-6 max-w-2xl mx-auto w-full">
         <ProcessingState />
       </div>
     );
@@ -300,7 +300,7 @@ export default function NeuPage() {
   // ─── PHASE: CONFIRMED ───
   if (phase === 'confirmed' && state.report) {
     return (
-      <div className="flex flex-col items-center justify-center gap-6 p-6 py-12 min-h-screen">
+      <div className="flex flex-col items-center justify-center gap-6 p-6 py-12 min-h-screen max-w-2xl mx-auto w-full">
         <div className="w-20 h-20 rounded-full flex items-center justify-center animate-zoom-in"
           style={{ backgroundColor: 'var(--accent)' }}>
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-10 h-10" style={{ fill: '#1A1A1A' }}>
@@ -334,7 +334,7 @@ export default function NeuPage() {
     const report = state.report;
 
     return (
-      <div className="flex flex-col min-h-screen p-6 animate-fade-in">
+      <div className="flex flex-col min-h-screen p-6 animate-fade-in max-w-5xl mx-auto w-full">
         <div className="pt-4 mb-6">
           <h1 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>
             Bau<span style={{ color: '#059669' }}>Voice</span>
