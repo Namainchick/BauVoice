@@ -146,7 +146,7 @@ export default function NeuPage() {
 
     setFollowUpLoading(true);
     try {
-      const result = await mergeFollowUp(state.report, input);
+      const result = await mergeFollowUp(state.report, input, state.questions);
       dispatch({ type: 'MERGE_FOLLOW_UP_RESULT', payload: { result } });
 
       // Show undo toast
@@ -383,6 +383,10 @@ export default function NeuPage() {
   if (phase === 'report' && state.report) {
     const report = state.report;
 
+    const inputPlaceholder = state.questions.length > 0
+      ? 'Antwort oder neue Info eingeben...'
+      : 'Noch etwas ergänzen...';
+
     return (
       <div className="flex flex-col min-h-screen p-6 animate-fade-in max-w-5xl mx-auto w-full">
         <div className="pt-4 mb-6">
@@ -393,16 +397,17 @@ export default function NeuPage() {
 
         <ReportView />
         <AIChat onAnswer={handleMergeInput} isMergeLocked={followUpLoading} />
-        <ProblemAction />
 
         {/* Always-visible follow-up input */}
-        <div className="mt-6">
+        <div className="mt-4">
           <UnifiedInput
             onSubmit={handleMergeInput}
-            placeholder="Noch etwas ergänzen..."
+            placeholder={inputPlaceholder}
             isLoading={followUpLoading}
           />
         </div>
+
+        <ProblemAction />
 
         {/* Confirm section */}
         <div className="mt-6 rounded-xl p-5 space-y-3 border"
