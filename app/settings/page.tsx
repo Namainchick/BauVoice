@@ -2,11 +2,13 @@
 
 import { useState } from 'react';
 import { useReport } from '@/lib/context/ReportContext';
+import { useViewMode } from '@/lib/context/ViewModeContext';
 import { clearAllReports, loadReports, saveReport, markDemoLoaded } from '@/lib/utils/storage';
 import { DEMO_REPORTS } from '@/lib/data/demoReports';
 
 export default function SettingsPage() {
   const { dispatch } = useReport();
+  const { viewMode, setViewMode } = useViewMode();
   const [toast, setToast] = useState<string | null>(null);
 
   const showToast = (msg: string) => {
@@ -39,6 +41,31 @@ export default function SettingsPage() {
       </div>
 
       <div className="space-y-4">
+        <div className="rounded-xl p-4 border"
+          style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border-subtle)', boxShadow: 'var(--shadow-card)' }}>
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>
+                Ansicht
+              </h3>
+              <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>
+                {viewMode === 'force-mobile' ? 'Mobile Ansicht erzwungen' : viewMode === 'force-desktop' ? 'Desktop Ansicht erzwungen' : 'Automatisch (nach Bildschirmgröße)'}
+              </p>
+            </div>
+            <button
+              onClick={() => setViewMode(viewMode === 'force-mobile' ? 'auto' : 'force-mobile')}
+              className="px-4 py-2 rounded-lg text-xs font-medium transition-all active:scale-95"
+              style={{
+                backgroundColor: viewMode === 'force-mobile' ? 'var(--accent)' : 'transparent',
+                color: viewMode === 'force-mobile' ? '#1A1A1A' : 'var(--text-secondary)',
+                border: viewMode === 'force-mobile' ? 'none' : '1px solid var(--border-medium)',
+              }}
+            >
+              {viewMode === 'force-mobile' ? 'Desktop Ansicht' : 'Mobile Ansicht'}
+            </button>
+          </div>
+        </div>
+
         <div className="rounded-xl p-4 border"
           style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border-subtle)', boxShadow: 'var(--shadow-card)' }}>
           <h3 className="text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>
