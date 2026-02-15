@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { useReport } from '@/lib/context/ReportContext';
 import { FollowUpQuestion } from '@/lib/types/report';
 
@@ -11,18 +10,11 @@ interface AIChatProps {
 
 export default function AIChat({ onAnswer, isMergeLocked }: AIChatProps) {
   const { state } = useReport();
-  const [textInput, setTextInput] = useState('');
 
   const handleQuickReply = (question: FollowUpQuestion, reply: string) => {
     if (isMergeLocked) return;
     const contextualAnswer = `Antwort auf Frage: "${question.frage}" → ${reply}`;
     onAnswer(contextualAnswer);
-  };
-
-  const handleTextSubmit = () => {
-    if (!textInput.trim() || isMergeLocked) return;
-    onAnswer(textInput);
-    setTextInput('');
   };
 
   if (state.questions.length === 0 && !isMergeLocked) return null;
@@ -56,20 +48,6 @@ export default function AIChat({ onAnswer, isMergeLocked }: AIChatProps) {
           )}
         </div>
       ))}
-
-      <div className="flex gap-2">
-        <input type="text" value={textInput} onChange={(e) => setTextInput(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && handleTextSubmit()}
-          placeholder="Antwort eingeben..."
-          className="flex-1 px-4 py-3 rounded-xl text-sm border focus:outline-none"
-          style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border-subtle)', color: 'var(--text-primary)' }}
-          disabled={isMergeLocked} />
-        <button onClick={handleTextSubmit} disabled={isMergeLocked || !textInput.trim()}
-          className="px-4 py-3 rounded-xl text-sm font-medium disabled:opacity-50 transition-all active:scale-95"
-          style={{ backgroundColor: 'var(--accent)', color: '#1A1A1A' }}>
-          {isMergeLocked ? '...' : 'Senden'}
-        </button>
-      </div>
 
       {isMergeLocked && (
         <p className="text-xs text-center animate-pulse" style={{ color: 'var(--text-tertiary)' }}>
