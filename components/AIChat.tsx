@@ -14,19 +14,14 @@ export default function AIChat({ onAnswer, isMergeLocked }: AIChatProps) {
   const [textInput, setTextInput] = useState('');
 
   const handleQuickReply = (question: FollowUpQuestion, reply: string) => {
+    if (isMergeLocked) return;
     const contextualAnswer = `Antwort auf Frage: "${question.frage}" → ${reply}`;
     onAnswer(contextualAnswer);
   };
 
   const handleTextSubmit = () => {
-    if (!textInput.trim()) return;
-    const firstQuestion = state.questions[0];
-    if (firstQuestion) {
-      const contextualAnswer = `Antwort auf Frage: "${firstQuestion.frage}" → ${textInput}`;
-      onAnswer(contextualAnswer);
-    } else {
-      onAnswer(textInput);
-    }
+    if (!textInput.trim() || isMergeLocked) return;
+    onAnswer(textInput);
     setTextInput('');
   };
 

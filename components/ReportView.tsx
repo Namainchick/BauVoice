@@ -181,13 +181,13 @@ export default function ReportView() {
           const r = report as import('@/lib/types/report').Abnahmeprotokoll;
           const ergebnisConfig: Record<string, { label: string; color: string; bg: string }> = {
             abgenommen: { label: 'Abgenommen', color: '#059669', bg: 'var(--accent-dim)' },
-            abgenommen_mit_maengeln: { label: 'Abgenommen mit Mängeln', color: '#D97706', bg: '#FEF3C7' },
-            nicht_abgenommen: { label: 'Nicht abgenommen', color: '#DC2626', bg: '#FEE2E2' },
+            abgenommen_mit_maengeln: { label: 'Abgenommen mit Mängeln', color: '#D97706', bg: 'rgba(217,119,6,0.1)' },
+            nicht_abgenommen: { label: 'Nicht abgenommen', color: '#DC2626', bg: 'rgba(220,38,38,0.1)' },
           };
           const schwereConfig: Record<string, { label: string; color: string; bg: string }> = {
-            leicht: { label: 'Leicht', color: '#D97706', bg: '#FEF3C7' },
-            mittel: { label: 'Mittel', color: '#EA580C', bg: '#FFEDD5' },
-            schwer: { label: 'Schwer', color: '#DC2626', bg: '#FEE2E2' },
+            leicht: { label: 'Leicht', color: '#D97706', bg: 'rgba(217,119,6,0.1)' },
+            mittel: { label: 'Mittel', color: '#EA580C', bg: 'rgba(234,88,12,0.1)' },
+            schwer: { label: 'Schwer', color: '#DC2626', bg: 'rgba(220,38,38,0.1)' },
           };
           return (
             <>
@@ -322,8 +322,8 @@ export default function ReportView() {
           const r = report as import('@/lib/types/report').Checkliste;
           const statusConfig: Record<string, { label: string; color: string; bg: string }> = {
             ok: { label: 'OK', color: '#059669', bg: 'var(--accent-dim)' },
-            mangel: { label: 'Mangel', color: '#DC2626', bg: '#FEE2E2' },
-            nicht_geprueft: { label: 'Nicht geprüft', color: '#6B7280', bg: '#F3F4F6' },
+            mangel: { label: 'Mangel', color: '#DC2626', bg: 'rgba(220,38,38,0.1)' },
+            nicht_geprueft: { label: 'Nicht geprüft', color: '#6B7280', bg: 'rgba(107,114,128,0.1)' },
           };
           return (
             <>
