@@ -10,12 +10,12 @@ export default function AIChat() {
   const [isLoading, setIsLoading] = useState(false);
   const [textInput, setTextInput] = useState('');
 
-  const handleAnswer = async (answer: string, questionId?: string) => {
+  const handleAnswer = async (answer: string) => {
     if (!state.report || !answer.trim()) return;
     setIsLoading(true);
     try {
       const result = await mergeFollowUp(state.report, answer);
-      dispatch({ type: 'MERGE_FOLLOW_UP_RESULT', payload: { answeredQuestionId: questionId, result } });
+      dispatch({ type: 'MERGE_FOLLOW_UP_RESULT', payload: { result } });
     } catch (error) { console.error('Merge failed:', error); }
     finally { setIsLoading(false); setTextInput(''); }
   };
@@ -41,7 +41,7 @@ export default function AIChat() {
           {q.quick_replies && q.quick_replies.length > 0 && (
             <div className="flex flex-wrap gap-2 pl-11">
               {q.quick_replies.map((reply, i) => (
-                <button key={i} onClick={() => handleAnswer(reply, q.id)} disabled={isLoading}
+                <button key={i} onClick={() => handleAnswer(reply)} disabled={isLoading}
                   className="px-3 py-1.5 rounded-full text-xs font-medium border transition-colors disabled:opacity-50"
                   style={{ borderColor: 'var(--accent)', color: '#059669' }}>
                   {reply}
