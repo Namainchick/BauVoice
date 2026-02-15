@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useReport } from '@/lib/context/ReportContext';
+import { useViewMode } from '@/lib/context/ViewModeContext';
 import ReportCard from '@/components/ReportCard';
 
 function getGreeting(): string {
@@ -15,6 +16,7 @@ function getGreeting(): string {
 export default function DashboardPage() {
   const router = useRouter();
   const { state, dispatch } = useReport();
+  const { isDesktop } = useViewMode();
   const [search, setSearch] = useState('');
 
   const filtered = useMemo(() => {
@@ -107,7 +109,7 @@ export default function DashboardPage() {
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div className={isDesktop ? "grid grid-cols-2 lg:grid-cols-3 gap-3" : "space-y-3"}>
           {filtered.map((entry, i) => (
             <ReportCard
               key={entry.id}

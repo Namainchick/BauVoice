@@ -1,6 +1,7 @@
 'use client';
 
 import { useReport } from '@/lib/context/ReportContext';
+import { useViewMode } from '@/lib/context/ViewModeContext';
 import { REPORT_TYPE_LABELS } from '@/lib/types/report';
 import ReportSection from '@/components/ReportSection';
 
@@ -13,6 +14,7 @@ function completenessColor(pct: number): string {
 
 export default function ReportView() {
   const { state } = useReport();
+  const { isDesktop } = useViewMode();
   const { report } = state;
   if (!report) return null;
 
@@ -35,7 +37,7 @@ export default function ReportView() {
           style={{ width: `${report.vollstaendigkeit}%`, backgroundColor: completenessColor(report.vollstaendigkeit) }} />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
+      <div className={isDesktop ? "grid grid-cols-2 gap-3 mt-4" : "space-y-2 mt-4"}>
         <ReportSection title="Allgemeine Informationen" defaultOpen>
           <div className="space-y-2 text-sm">
             {[
