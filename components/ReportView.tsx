@@ -56,7 +56,7 @@ export default function ReportView() {
           </div>
         </ReportSection>
 
-        <ReportSection title="Mitarbeiter" isEmpty={report.mitarbeiter.length === 0}>
+        <ReportSection title="Mitarbeiter" defaultOpen isEmpty={report.mitarbeiter.length === 0}>
           <ul className="space-y-1">
             {report.mitarbeiter.map((m, i) => (
               <li key={i} className="text-sm flex items-center gap-2">
@@ -89,7 +89,7 @@ export default function ReportView() {
           )}
         </ReportSection>
 
-        <ReportSection title="Leistungen" isEmpty={report.leistungen.length === 0}>
+        <ReportSection title="Leistungen" defaultOpen isEmpty={report.leistungen.length === 0}>
           <ul className="space-y-3">
             {report.leistungen.map((l, i) => (
               <li key={i} className="text-sm pb-2 last:pb-0" style={{ borderBottom: i < report.leistungen.length - 1 ? '1px solid var(--border-subtle)' : 'none' }}>
@@ -106,7 +106,7 @@ export default function ReportView() {
           </ul>
         </ReportSection>
 
-        <ReportSection title="Materialien" isEmpty={report.materialien.length === 0}>
+        <ReportSection title="Materialien" defaultOpen isEmpty={report.materialien.length === 0}>
           <ul className="space-y-2">
             {report.materialien.map((m, i) => (
               <li key={i} className="text-sm flex justify-between">
