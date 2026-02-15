@@ -22,19 +22,41 @@ export default function NeuPage() {
   const router = useRouter();
   const { state, dispatch } = useReport();
 
-  const [phase, setPhase] = useState<Phase>('idle');
+  const isEditMode = state.isEditing && !!state.report;
+  const [phase, setPhase] = useState<Phase>(isEditMode ? 'report' : 'idle');
   const [transcript, setTranscript] = useState('');
   const [interimText, setInterimText] = useState('');
   const [seconds, setSeconds] = useState(0);
   const [isRecording, setIsRecording] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [followUpLoading, setFollowUpLoading] = useState(false);
+  const editQuestionsLoaded = useRef(false);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const recognitionRef = useRef<any>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const supported = typeof window !== 'undefined' && isSpeechRecognitionSupported();
+
+  // Edit mode: if report is incomplete and no questions, ask AI for follow-ups
+  useEffect(() => {
+    if (!isEditMode || !state.report || editQuestionsLoaded.current) return;
+    if (state.questions.length > 0) return;
+    if (state.report.vollstaendigkeit >= 100) return;
+
+    editQuestionsLoaded.current = true;
+    (async () => {
+      setFollowUpLoading(true);
+      try {
+        const result = await mergeFollowUp(state.report!, 'Welche Informationen fehlen noch in diesem Bericht? Bitte stelle Rückfragen.');
+        dispatch({ type: 'MERGE_FOLLOW_UP_RESULT', payload: { result } });
+      } catch (err) {
+        console.error('Failed to generate edit follow-ups:', err);
+      } finally {
+        setFollowUpLoading(false);
+      }
+    })();
+  }, [isEditMode, state.report, state.questions.length, dispatch]);
 
   // Timer
   useEffect(() => {

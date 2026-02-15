@@ -16,6 +16,7 @@ export interface AppState {
   currentReportId: string | null;
   photos: string[];
   flowStep: FlowStep;
+  isEditing: boolean;
 }
 
 type Action =
@@ -31,6 +32,7 @@ type Action =
   | { type: 'LOAD_SAVED_REPORTS'; payload: SavedReport[] }
   | { type: 'SET_CURRENT_REPORT_ID'; payload: string }
   | { type: 'VIEW_SAVED_REPORT'; payload: SavedReport }
+  | { type: 'EDIT_SAVED_REPORT'; payload: SavedReport }
   | { type: 'RESET' };
 
 const initialState: AppState = {
@@ -42,6 +44,7 @@ const initialState: AppState = {
   currentReportId: null,
   photos: [],
   flowStep: 'start',
+  isEditing: false,
 };
 
 function reportReducer(state: AppState, action: Action): AppState {
@@ -83,8 +86,8 @@ function reportReducer(state: AppState, action: Action): AppState {
       const entry: SavedReport = {
         id: state.currentReportId || generateReportId(),
         report: confirmed,
-        questions: [],
-        problems: [],
+        questions: state.questions,
+        problems: state.problems,
         savedAt: new Date().toISOString(),
       };
       saveReport(entry);
@@ -108,6 +111,16 @@ function reportReducer(state: AppState, action: Action): AppState {
         questions: action.payload.questions,
         problems: action.payload.problems,
         currentReportId: action.payload.id,
+        isEditing: false,
+      };
+    case 'EDIT_SAVED_REPORT':
+      return {
+        ...state,
+        report: action.payload.report,
+        questions: action.payload.questions,
+        problems: action.payload.problems,
+        currentReportId: action.payload.id,
+        isEditing: true,
       };
     case 'RESET':
       return {
