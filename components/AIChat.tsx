@@ -9,10 +9,15 @@ interface AIChatProps {
 }
 
 export default function AIChat({ onAnswer, isMergeLocked }: AIChatProps) {
-  const { state } = useReport();
+  const { state, dispatch } = useReport();
 
   const handleQuickReply = (question: FollowUpQuestion, reply: string) => {
     if (isMergeLocked) return;
+    // Optimistically remove answered question from UI so it doesn't re-appear during loading
+    dispatch({
+      type: 'SET_QUESTIONS',
+      payload: state.questions.filter((q) => q.id !== question.id),
+    });
     const contextualAnswer = `Antwort auf Frage: "${question.frage}" → ${reply}`;
     onAnswer(contextualAnswer);
   };

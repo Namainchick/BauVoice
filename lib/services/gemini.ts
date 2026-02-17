@@ -48,9 +48,20 @@ function sanitizeResult(raw: unknown): GeminiAnalysisResult {
     status: typeof report.status === 'string' ? report.status : 'entwurf',
   };
 
+  // Sanitize individual questions: ensure quick_replies are real values, not "string" placeholders
+  const rawQuestions = ensureArray(obj.questions) as FollowUpQuestion[];
+  const sanitizedQuestions = rawQuestions.map((q) => ({
+    ...q,
+    quick_replies: Array.isArray(q.quick_replies)
+      ? q.quick_replies.filter(
+          (r) => typeof r === 'string' && r.length > 0 && r.toLowerCase() !== 'string'
+        )
+      : [],
+  }));
+
   return {
     report: sanitizedReport as GeminiAnalysisResult['report'],
-    questions: ensureArray(obj.questions) as GeminiAnalysisResult['questions'],
+    questions: sanitizedQuestions,
     problems: ensureArray(obj.problems) as GeminiAnalysisResult['problems'],
   };
 }

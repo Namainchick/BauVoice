@@ -73,9 +73,9 @@ Antworte IMMER als valides JSON in genau diesem Format:
   "questions": [
     {
       "id": "q1",
-      "frage": "string",
+      "frage": "Wie viele Mitarbeiter waren heute auf der Baustelle?",
       "typ": "fehlend",
-      "quick_replies": ["string", "string"]
+      "quick_replies": ["2 Mitarbeiter", "3 Mitarbeiter", "5 Mitarbeiter"]
     }
   ],
   "problems": [
